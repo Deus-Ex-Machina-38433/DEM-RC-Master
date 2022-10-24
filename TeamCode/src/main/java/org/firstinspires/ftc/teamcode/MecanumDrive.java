@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.*;
 public class MecanumDrive extends OpMode {
 
     // Wheel Motors
-    DcMotorEx RFMotor; // Right Front Motor
-    DcMotorEx LFMotor; // Left Front Motor
-    DcMotorEx RBMotor; // Right Back Motor
-    DcMotorEx LBMotor; // Left Back Motor
+    DcMotorEx RightFrontMotor; // Right Front Motor
+    DcMotorEx LeftFrontMotor; // Left Front Motor
+    DcMotorEx RightBackMotor; // Right Back Motor
+    DcMotorEx LeftBackMotor; // Left Back Motor
     // Misc Motors
     DcMotorEx AMInner; // Arm Motor Inner
     DcMotorEx AMOuter; // Arm Motor Outer
@@ -21,12 +21,12 @@ public class MecanumDrive extends OpMode {
     public void init(){
 
         // Wheel Motors
-        LFMotor = (DcMotorEx) hardwareMap.dcMotor.get("LFMotor");
-        RFMotor = (DcMotorEx) hardwareMap.dcMotor.get("RFMotor");
-        LBMotor = (DcMotorEx) hardwareMap.dcMotor.get("LBMotor");
-        RBMotor = (DcMotorEx) hardwareMap.dcMotor.get("RBMotor");
-        LFMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        LBMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        LeftFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftFrontMotor");
+        RightFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightFrontMotor");
+        LeftBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftBackMotor");
+        RightBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightBackMotor");
+        LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Misc Motors
         AMInner = (DcMotorEx) hardwareMap.dcMotor.get("AMInner");
@@ -54,16 +54,16 @@ public class MecanumDrive extends OpMode {
         double sinAngleRadians = Math.sin(stickAngleRadians);
         double cosAngleRadians = Math.cos(stickAngleRadians);
         double factor = 1 / Math.max(Math.abs(sinAngleRadians), Math.abs(cosAngleRadians));
-        LFMotor.setPower(( -wheelPower * cosAngleRadians * factor + turn) * speedMultiply);
-        RFMotor.setPower(( -wheelPower * sinAngleRadians * factor - turn) * speedMultiply);
-        LBMotor.setPower(( -wheelPower * sinAngleRadians * factor + turn) * speedMultiply);
-        RBMotor.setPower(( -wheelPower * cosAngleRadians * factor - turn) * speedMultiply);
+        LeftFrontMotor.setPower(( -wheelPower * cosAngleRadians * factor + turn) * speedMultiply);
+        RightFrontMotor.setPower(( -wheelPower * sinAngleRadians * factor - turn) * speedMultiply);
+        LeftBackMotor.setPower(( -wheelPower * sinAngleRadians * factor + turn) * speedMultiply);
+        RightBackMotor.setPower(( -wheelPower * cosAngleRadians * factor - turn) * speedMultiply);
 
         if(gamepad1.a){
-            LFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            RFMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            LBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            RBMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            LeftFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            RightFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            LeftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            RightBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         }
     }
 }
