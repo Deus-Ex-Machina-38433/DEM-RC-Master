@@ -8,15 +8,19 @@ import com.qualcomm.robotcore.hardware.*;
 @TeleOp(name = "MecanumDrive")
 public class MecanumDrive extends OpMode {
 
-    DcMotorEx RFMotor;
-    DcMotorEx LFMotor;
-    DcMotorEx RBMotor;
-    DcMotorEx LBMotor;
-
+    // Wheel Motors
+    DcMotorEx RFMotor; // Right Front Motor
+    DcMotorEx LFMotor; // Left Front Motor
+    DcMotorEx RBMotor; // Right Back Motor
+    DcMotorEx LBMotor; // Left Back Motor
+    // Misc Motors
+    DcMotorEx AMInner; // Arm Motor Inner
+    DcMotorEx AMOuter; // Arm Motor Outer
 
     @Override
     public void init(){
 
+        // Wheel Motors
         LFMotor = (DcMotorEx) hardwareMap.dcMotor.get("LFMotor");
         RFMotor = (DcMotorEx) hardwareMap.dcMotor.get("RFMotor");
         LBMotor = (DcMotorEx) hardwareMap.dcMotor.get("LBMotor");
@@ -24,6 +28,9 @@ public class MecanumDrive extends OpMode {
         LFMotor.setDirection(DcMotorEx.Direction.REVERSE);
         LBMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
+        // Misc Motors
+        AMInner = (DcMotorEx) hardwareMap.dcMotor.get("AMInner");
+        AMOuter = (DcMotorEx) hardwareMap.dcMotor.get("AMOuter");
     }
 
     @Override
@@ -60,5 +67,5 @@ public class MecanumDrive extends OpMode {
         }
     }
 }
-//Find Ticks Per Motor Rotation and Multiply the internal Power Value by that to Switch it to Velocity
-//Easy to fix if it doesnt work dont have motor inverts for our current robot
+//  Find Ticks Per Motor Rotation and Multiply the internal Power Value by that to Switch it to Velocity
+//  Easy to fix if it doesnt work dont have motor inverts for our current robot
