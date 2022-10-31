@@ -164,11 +164,24 @@ public class MecanumDrive extends OpMode {
         //End^^
         
         //Begin Claw Servo Code :(
+		
+        double leftInital = 0.0; //Set Value
+		double right Inital = 0.0 //^^
+		
+		armRight.setPosition(leftInital);
+		armLeft.setPosition(rightInital);
         
-        
-        
-        
-        
+		//To Close
+		if(gamepad2.right_bumper){
+			armRight.setPosition(0.0); //SetValue
+			armLeft.setPosition(0.0); //SetValue	
+		} 
+		
+		// Release
+		if (gamepad2.left_bumper){
+			armRight.setPosition(rightInital);
+			armLeft.setPosition(leftInital);
+		}
         
         
         /*
@@ -179,7 +192,7 @@ public class MecanumDrive extends OpMode {
         or like a run to position thing, doesn't need to be crazy)
         All PID tuning that can do
         Create Reset thing
-        Servo Coding for claw
+        Servo Coding for claw (TEST)
         Scratch Code for Nicks design
         Simple this file
         Convince for odometery pods cause nobody listen lmfao
