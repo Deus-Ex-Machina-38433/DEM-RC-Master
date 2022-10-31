@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
 
+import org.tensorflow.lite.Tensor;
+
 @TeleOp(name = "MecanumDrive")
 public class MecanumDrive extends OpMode {
 
@@ -14,7 +16,7 @@ public class MecanumDrive extends OpMode {
     DcMotorEx RightBackMotor; // Right Back Motor
     DcMotorEx LeftBackMotor; // Left Back Motor
     // Misc Motors
-    DcMotorEx AMInner; // Arm Motor Inner
+//    DcMotorEx AMInner; // Arm Motor Inner
     DcMotorEx AMOuter; // Arm Motor Outer
 
     @Override
@@ -29,12 +31,17 @@ public class MecanumDrive extends OpMode {
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Misc Motors
-        AMInner = (DcMotorEx) hardwareMap.dcMotor.get("AMInner");
+//        AMInner = (DcMotorEx) hardwareMap.dcMotor.get("AMInner");
         AMOuter = (DcMotorEx) hardwareMap.dcMotor.get("AMOuter");
+        AMOuter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        telemetry.addData("Arm Height:", AMOuter.getCurrentPosition());
     }
 
     @Override
     public void loop(){
+
+        AMOuter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.update();
 
         double speedMultiply;
         if(gamepad1.right_trigger > .75){
@@ -59,11 +66,18 @@ public class MecanumDrive extends OpMode {
         LeftBackMotor.setPower(( -wheelPower * sinAngleRadians * factor + turn) * speedMultiply);
         RightBackMotor.setPower(( -wheelPower * cosAngleRadians * factor - turn) * speedMultiply);
 
+        if(gamepad2.left_trigger > .9){
+            AMOuter.setVelocity(-100);
+        } else if(gamepad2.right_trigger> .9){
+            AMOuter.setVelocity(100);
+        }
+
         if(gamepad1.a){
             LeftFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             RightFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             LeftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             RightBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            AMOuter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
     }
 }
