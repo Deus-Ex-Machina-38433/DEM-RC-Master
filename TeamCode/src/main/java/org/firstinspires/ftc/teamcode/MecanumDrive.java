@@ -42,7 +42,7 @@ public class MecanumDrive extends OpMode {
         } else if(gamepad1.left_trigger >.75){
             speedMultiply = .25;
         } else{
-            speedMultiply = .69;
+            speedMultiply = .69; //Nice
         }
 
         double lateral = -gamepad1.left_stick_x;
@@ -65,6 +65,8 @@ public class MecanumDrive extends OpMode {
             LeftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             RightBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         }
+
+        
     }
 }
 //  Find Ticks Per Motor Rotation and Multiply the internal Power Value by that to Switch it to Velocity
