@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.util.Range;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
@@ -12,21 +16,25 @@ import org.tensorflow.lite.Tensor;
 @TeleOp(name = "MecanumDrive")
 public class MecanumDrive extends OpMode {
 
-    //Variable Declarations Arm Outer Motor
-    public double lastErrorAMO = 0;
-    public double integralSumAMO = 0;
+    //Begin Arm Outer Motor PID Declarations
+    private PIDController controller;
 
-    public static double KpAMO = 0.0;
-    public static double KiAMO = 0.0;
-    public static double KdAMO = 0.0;
-    DcMotorEx AMOuter; // Arm Motor Outer
+    public static double p = 0, i = 0, d =0;
+    public static double f =0;
 
-    // Wheel Motors
-    DcMotorEx RightFrontMotor; // Right Front Motor
-    DcMotorEx LeftFrontMotor; // Left Front Motor
-    DcMotorEx RightBackMotor; // Right Back Motor
-    DcMotorEx LeftBackMotor; // Left Back Motor
-    // Misc Motors
+    private final double ticks_in_degree = 0 / 180.0; //Insert Value
+    private final double ticks_per_Rev = 0; //Insert Value
+
+    private DcMotorEx AMOuter;
+    //End Above
+
+    // Drivetrain Motors
+    DcMotorEx RightFrontMotor; // Right Front Motor 1
+    DcMotorEx LeftFrontMotor; // Left Front Motor 0
+    DcMotorEx RightBackMotor; // Right Back Motor 3
+    DcMotorEx LeftBackMotor; // Left Back Motor 2
+
+
     DcMotorEx AMInner; // Arm Motor Inner
 
 
@@ -43,14 +51,17 @@ public class MecanumDrive extends OpMode {
 
         // Misc Motors
 //      AMInner = (DcMotorEx) hardwareMap.dcMotor.get("AMInner");
-        AMOuter = (DcMotorEx) hardwareMap.dcMotor.get("AMOuter");
+
+        //Begin Arm Outer Motor PID Inits
+        controller = new PIDController(p, i, d);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        AMOuter = hardwareMap.get(DcMotorEx.class, "AMOuter");
+        // End as Above
     }
 
     @Override
     public void loop(){
-
-        AMOuter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        telemetry.update();
 
         double speedMultiply;
         if(gamepad1.right_trigger > .75){
@@ -75,26 +86,50 @@ public class MecanumDrive extends OpMode {
         LeftBackMotor.setPower(( -wheelPower * sinAngleRadians * factor + turn) * speedMultiply);
         RightBackMotor.setPower(( -wheelPower * cosAngleRadians * factor - turn) * speedMultiply);
 
-        if(gamepad2.left_trigger > .9){
-            AMOuter.setVelocity(-100);
-        } else if(gamepad2.right_trigger> .9){
-            AMOuter.setVelocity(100);
-        }
-
+        // LAST DITCH ROBOT RESET CODE
+        // DO NOT ACTIVE UNLESS ABSOLUTELY NEEDED
         if(gamepad1.a){
             LeftFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             RightFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             LeftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             RightBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             AMOuter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // Make better Reset thing, thatll mess with stuff
         }
 
-        
-    }
+        // Arm Outer Motor PID Code Begin
+        int target = 0;// Set actual value or toss in a reset
 
-    public void PIDforMotor () {
+        if(gamepad2.left_trigger > .9){
+            target = target -100;
+        } else if(gamepad2.right_trigger> .9){
+            target = target +100;
+        }
+        controller.setPID(p, i, d);
+        int armPos = AMOuter.getCurrentPosition();
+        double pid = controller.calculate(armPos, target);
+        double ff = Math.cos(Math.toRadians(target/ticks_in_degree)) * f;
 
+        double velocity = (pid + ff) * ticks_per_Rev;
+
+        AMOuter.setVelocity(velocity);
+
+        telemetry.addData("pos:", armPos);
+        telemetry.addData("target", target);
+        // End As Above
+
+        /*
+        TODO:
+        Chain Both arm motors together
+        Camera reading stuff
+        Some form of working autonomous (Time :(, Could do distance if thatll work,
+        or like a run to position thing, doesn't need to be crazy)
+        All PID tuning that can do
+        Create Reset thing
+        Servo Coding for claw
+        Scratch Code for Nicks design
+        Simple this file
+        Convince for odometery pods cause nobody listen lmfao
+        */
     }
 }
-//  Find Ticks Per Motor Rotation and Multiply the internal Power Value by that to Switch it to Velocity
-//  Easy to fix if it doesnt work dont have motor inverts for our current robot
