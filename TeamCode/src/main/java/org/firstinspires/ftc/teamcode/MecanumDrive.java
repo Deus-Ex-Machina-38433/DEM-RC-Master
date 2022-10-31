@@ -17,25 +17,37 @@ import org.tensorflow.lite.Tensor;
 public class MecanumDrive extends OpMode {
 
     //Begin Arm Outer Motor PID Declarations
-    private PIDController controller;
+    private PIDController controllerAMO;
 
-    public static double p = 0, i = 0, d =0;
-    public static double f =0;
+    public static double pAMO = 0, iAMO = 0, dAMO =0;
+    public static double fAMO =0;
 
-    private final double ticks_in_degree = 0 / 180.0; //Insert Value
-    private final double ticks_per_Rev = 0; //Insert Value
+    private final double ticks_in_degreeAMO = 0 / 180.0; //Insert Value
+    private final double ticks_per_RevAMO = 0; //Insert Value
 
     private DcMotorEx AMOuter;
     //End Above
+    
+    //Begin Arm Inner Motor PID Declarations
+    private PIDController controllerAMI;
+
+    public static double pAMI = 0, iAMI = 0, dAMI =0;
+    public static double fAMI =0;
+
+    private final double ticks_in_degreeAMI = 0 / 180.0; //Insert Value
+    private final double ticks_per_RevAMI = 0; //Insert Value
+
+    private DcMotorEx AMInner;
+    //End As Above
 
     // Drivetrain Motors
     DcMotorEx RightFrontMotor; // Right Front Motor 1
     DcMotorEx LeftFrontMotor; // Left Front Motor 0
     DcMotorEx RightBackMotor; // Right Back Motor 3
     DcMotorEx LeftBackMotor; // Left Back Motor 2
-
-
-    DcMotorEx AMInner; // Arm Motor Inner
+    // End^^
+    
+    servo armRight, armLeft;
 
 
     @Override
@@ -50,14 +62,20 @@ public class MecanumDrive extends OpMode {
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Misc Motors
-//      AMInner = (DcMotorEx) hardwareMap.dcMotor.get("AMInner");
+        
+        //Begin Inner Motor PID Inits
+        controllerAMI = new PIDController(pAMI, iAMI, dAMI);
+        AMInner = hardwareMap.get(DcMotorEx.class, "AMInner");
 
         //Begin Arm Outer Motor PID Inits
-        controller = new PIDController(p, i, d);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
+        controllerAMO = new PIDController(pAMO, iAMO, dAMO);
         AMOuter = hardwareMap.get(DcMotorEx.class, "AMOuter");
         // End as Above
+        
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        
+        armRight = hardwareMap.servo.get("armRight");
+        armLeft = hardwareMap.servo.get("armLeft");        
     }
 
     @Override
@@ -94,30 +112,65 @@ public class MecanumDrive extends OpMode {
             LeftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             RightBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             AMOuter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            AMInner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             // Make better Reset thing, thatll mess with stuff
         }
 
         // Arm Outer Motor PID Code Begin
-        int target = 0;// Set actual value or toss in a reset
-
-        if(gamepad2.left_trigger > .9){
-            target = target -100;
-        } else if(gamepad2.right_trigger> .9){
-            target = target +100;
-        }
-        controller.setPID(p, i, d);
-        int armPos = AMOuter.getCurrentPosition();
-        double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(Math.toRadians(target/ticks_in_degree)) * f;
-
-        double velocity = (pid + ff) * ticks_per_Rev;
-
-        AMOuter.setVelocity(velocity);
-
-        telemetry.addData("pos:", armPos);
-        telemetry.addData("target", target);
+        int targetAMOuter = 0;// Set actual value or toss in a reset
+        controllerAMO.setPID(pAMO, iAMO, dAMO);
+        int armPosAMO = AMOuter.getCurrentPosition();
+        double pidAMO = controller.calculate(armPosAMO, targetAMOuter);
+        double ffAMO = Math.cos(Math.toRadians(targetAMOuter/ticks_in_degreeAMO)) * fAMO;
+        double velocityAMO = (pidAMO + ffAMO) * ticks_per_RevAMO;
+        AMOuter.setVelocity(velocityAMO);
+        telemetry.addData("posOuter:", armPosAMO);
+        telemetry.addData("targetAMOuter:", targetAMOuter);
         // End As Above
-
+        
+        //Arm Inner Motor PID Code Begin
+        int targetAMInner = 0; // Set ctual value or toss in a reset
+        controllerAMI.setPID(pAMI, iAMI, dAMI);
+        int armPosAMI = AMInner.getCurrentPosition();
+        double pidAMI = AMInner.calculate(armPosAMI, targetAMInner);
+        double ffAMI = Math.cos(Math.toRadians(targetAMInner/ticks_in_degreesAMI)) * fAMI;
+        double velocityAMI = (pidAMI + ffAMI) * ticks_per_RevAMI;
+        AMInner.setVelocity(velocityAMI);
+        telemetry.addData("posInner:", armPosAMI);
+        telemetry.addData("targetAMInner:", targetAMInner);
+        //End As Above
+        
+        
+        
+        //Arm Height controls non-manual, Add in corresponding values for other part of the ARM
+        if(gamepad2.a){
+            targetAMOuter = 0.0 //Insert Ideal Value Highest
+            targetAMInner = 0.0 //^^
+        } else if(gamepad2.b) {
+            targetAMOuter = 1.0 //Middle Value
+            targetAMInner = 1.0 //^^
+        } else if(gamepad2.x) {
+            targetAMOuter = 2.0 //Low value
+            targetAMInner = 2.0 //^^
+        } else {
+            if(gamepad2.left_trigger > .9){
+                targetAMOuter = targetAMOuter -100;
+                targetAMInner = targetAMInner + 0.0 //Insert Value
+            } else if(gamepad2.right_trigger> .9){
+                targetAMOuter = targetAMOuter +100;
+                targetAMInner = targetAMInner - 0.0 //Insert Value
+            }
+        }
+        //End^^
+        
+        //Begin Claw Servo Code :(
+        
+        
+        
+        
+        
+        
+        
         /*
         TODO:
         Chain Both arm motors together
@@ -130,6 +183,7 @@ public class MecanumDrive extends OpMode {
         Scratch Code for Nicks design
         Simple this file
         Convince for odometery pods cause nobody listen lmfao
+        Add height locks for scoring, Dk if will have enough driver practice before meet, to not use
         */
     }
 }
