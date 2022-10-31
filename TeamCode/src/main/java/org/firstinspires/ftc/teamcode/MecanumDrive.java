@@ -4,11 +4,22 @@ import android.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.tensorflow.lite.Tensor;
 
 @TeleOp(name = "MecanumDrive")
 public class MecanumDrive extends OpMode {
+
+    //Variable Declarations Arm Outer Motor
+    public double lastErrorAMO = 0;
+    public double integralSumAMO = 0;
+
+    public static double KpAMO = 0.0;
+    public static double KiAMO = 0.0;
+    public static double KdAMO = 0.0;
+    DcMotorEx AMOuter; // Arm Motor Outer
 
     // Wheel Motors
     DcMotorEx RightFrontMotor; // Right Front Motor
@@ -16,8 +27,8 @@ public class MecanumDrive extends OpMode {
     DcMotorEx RightBackMotor; // Right Back Motor
     DcMotorEx LeftBackMotor; // Left Back Motor
     // Misc Motors
-//    DcMotorEx AMInner; // Arm Motor Inner
-    DcMotorEx AMOuter; // Arm Motor Outer
+    DcMotorEx AMInner; // Arm Motor Inner
+
 
     @Override
     public void init(){
@@ -31,10 +42,8 @@ public class MecanumDrive extends OpMode {
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Misc Motors
-//        AMInner = (DcMotorEx) hardwareMap.dcMotor.get("AMInner");
+//      AMInner = (DcMotorEx) hardwareMap.dcMotor.get("AMInner");
         AMOuter = (DcMotorEx) hardwareMap.dcMotor.get("AMOuter");
-        AMOuter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        telemetry.addData("Arm Height:", AMOuter.getCurrentPosition());
     }
 
     @Override
@@ -81,6 +90,10 @@ public class MecanumDrive extends OpMode {
         }
 
         
+    }
+
+    public void PIDforMotor () {
+
     }
 }
 //  Find Ticks Per Motor Rotation and Multiply the internal Power Value by that to Switch it to Velocity
