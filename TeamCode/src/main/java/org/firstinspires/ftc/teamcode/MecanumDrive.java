@@ -47,8 +47,7 @@ public class MecanumDrive extends OpMode {
     DcMotorEx LeftBackMotor; // Left Back Motor 2
     // End^^
     
-    servo armRight, armLeft;
-
+    Servo armRight, armLeft;
 
     @Override
     public void init(){
@@ -120,7 +119,7 @@ public class MecanumDrive extends OpMode {
         int targetAMOuter = 0;// Set actual value or toss in a reset
         controllerAMO.setPID(pAMO, iAMO, dAMO);
         int armPosAMO = AMOuter.getCurrentPosition();
-        double pidAMO = controller.calculate(armPosAMO, targetAMOuter);
+        double pidAMO = controllerAMO.calculate(armPosAMO, targetAMOuter);
         double ffAMO = Math.cos(Math.toRadians(targetAMOuter/ticks_in_degreeAMO)) * fAMO;
         double velocityAMO = (pidAMO + ffAMO) * ticks_per_RevAMO;
         AMOuter.setVelocity(velocityAMO);
@@ -132,8 +131,8 @@ public class MecanumDrive extends OpMode {
         int targetAMInner = 0; // Set ctual value or toss in a reset
         controllerAMI.setPID(pAMI, iAMI, dAMI);
         int armPosAMI = AMInner.getCurrentPosition();
-        double pidAMI = AMInner.calculate(armPosAMI, targetAMInner);
-        double ffAMI = Math.cos(Math.toRadians(targetAMInner/ticks_in_degreesAMI)) * fAMI;
+        double pidAMI = controllerAMI.calculate(armPosAMI, targetAMInner);
+        double ffAMI = Math.cos(Math.toRadians(targetAMInner/ticks_in_degreeAMI)) * fAMI;
         double velocityAMI = (pidAMI + ffAMI) * ticks_per_RevAMI;
         AMInner.setVelocity(velocityAMI);
         telemetry.addData("posInner:", armPosAMI);
@@ -144,21 +143,21 @@ public class MecanumDrive extends OpMode {
         
         //Arm Height controls non-manual, Add in corresponding values for other part of the ARM
         if(gamepad2.a){
-            targetAMOuter = 0.0 //Insert Ideal Value Highest
-            targetAMInner = 0.0 //^^
+            targetAMOuter = (int) 0.0;//Insert Ideal Value Highest
+            targetAMInner = (int) 0.0;//^^
         } else if(gamepad2.b) {
-            targetAMOuter = 1.0 //Middle Value
-            targetAMInner = 1.0 //^^
+            targetAMOuter = (int) 1.0;//Middle Value
+            targetAMInner = (int) 1.0;//^^
         } else if(gamepad2.x) {
-            targetAMOuter = 2.0 //Low value
-            targetAMInner = 2.0 //^^
+            targetAMOuter = (int) 2.0;//Low value
+            targetAMInner = (int) 2.0;//^^
         } else {
             if(gamepad2.left_trigger > .9){
                 targetAMOuter = targetAMOuter -100;
-                targetAMInner = targetAMInner + 0.0 //Insert Value
+                targetAMInner = (int) (targetAMInner + 0.0);//Insert Value
             } else if(gamepad2.right_trigger> .9){
                 targetAMOuter = targetAMOuter +100;
-                targetAMInner = targetAMInner - 0.0 //Insert Value
+                targetAMInner = (int) (targetAMInner - 0.0);//Insert Value
             }
         }
         //End^^
@@ -166,7 +165,7 @@ public class MecanumDrive extends OpMode {
         //Begin Claw Servo Code :(
 		
         double leftInital = 0.0; //Set Value
-		double right Inital = 0.0 //^^
+		double rightInital = 0.0;//^^
 		
 		armRight.setPosition(leftInital);
 		armLeft.setPosition(rightInital);
