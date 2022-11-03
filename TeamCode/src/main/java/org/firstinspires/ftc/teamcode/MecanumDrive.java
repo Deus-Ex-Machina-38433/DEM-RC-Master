@@ -20,10 +20,10 @@ public class MecanumDrive extends OpMode {
     private PIDController controllerAMO;
 
     public static double pAMO = 0, iAMO = 0, dAMO =0;
-    public static double fAMO =0;
+    public static double fAMO = 0.25;
 
-    private final double ticks_in_degreeAMO = 0 / 180.0; //Insert Value
-    private final double ticks_per_RevAMO = 0; //Insert Value
+    private final double ticks_in_degreeAMO = 1993.6 / 360.0; //Insert Value
+    private final double ticks_per_RevAMO = 1993.6; //Insert Value
 
     private DcMotorEx AMOuter;
     //End Above
@@ -32,10 +32,10 @@ public class MecanumDrive extends OpMode {
     private PIDController controllerAMI;
 
     public static double pAMI = 0, iAMI = 0, dAMI =0;
-    public static double fAMI =0;
+    public static double fAMI =.3;
 
-    private final double ticks_in_degreeAMI = 0 / 180.0; //Insert Value
-    private final double ticks_per_RevAMI = 0; //Insert Value
+    private final double ticks_in_degreeAMI = 751.8 / 360.0; //Insert Value
+    private final double ticks_per_RevAMI = 751.8; //Insert Value
 
     private DcMotorEx AMInner;
     //End As Above
@@ -47,7 +47,7 @@ public class MecanumDrive extends OpMode {
     DcMotorEx LeftBackMotor; // Left Back Motor 2
     // End^^
     
-    Servo armRight, armLeft;
+//    Servo armRight, armLeft;
 
     @Override
     public void init(){
@@ -73,8 +73,8 @@ public class MecanumDrive extends OpMode {
         
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         
-        armRight = hardwareMap.servo.get("armRight");
-        armLeft = hardwareMap.servo.get("armLeft");        
+//        armRight = hardwareMap.servo.get("armRight");
+//        armLeft = hardwareMap.servo.get("armLeft");
     }
 
     @Override
@@ -116,34 +116,49 @@ public class MecanumDrive extends OpMode {
         }
 
         // Arm Outer Motor PID Code Begin
-        int targetAMOuter = 0;// Set actual value or toss in a reset
+        int targetAMOuter = 0; // Set actual value or toss in a reset
         controllerAMO.setPID(pAMO, iAMO, dAMO);
         int armPosAMO = AMOuter.getCurrentPosition();
         double pidAMO = controllerAMO.calculate(armPosAMO, targetAMOuter);
         double ffAMO = Math.cos(Math.toRadians(targetAMOuter/ticks_in_degreeAMO)) * fAMO;
-        double velocityAMO = (pidAMO + ffAMO) * ticks_per_RevAMO;
-        AMOuter.setVelocity(velocityAMO);
-        telemetry.addData("posOuter:", armPosAMO);
-        telemetry.addData("targetAMOuter:", targetAMOuter);
-        // End As Above
-        
-        //Arm Inner Motor PID Code Begin
+        //double PowerAMO = (pidAMO + ffAMO);
+
+        if(gamepad2.right_bumper){
+            AMOuter.setPower(.6);
+        } else if(gamepad2.left_bumper){
+            AMOuter.setPower(-.1);
+        } else{
+            AMOuter.setPower(ffAMO);
+        }
+
         int targetAMInner = 0; // Set ctual value or toss in a reset
         controllerAMI.setPID(pAMI, iAMI, dAMI);
         int armPosAMI = AMInner.getCurrentPosition();
         double pidAMI = controllerAMI.calculate(armPosAMI, targetAMInner);
         double ffAMI = Math.cos(Math.toRadians(targetAMInner/ticks_in_degreeAMI)) * fAMI;
-        double velocityAMI = (pidAMI + ffAMI) * ticks_per_RevAMI;
-        AMInner.setVelocity(velocityAMI);
+        double velocityAMI = (pidAMI + ffAMI);
         telemetry.addData("posInner:", armPosAMI);
         telemetry.addData("targetAMInner:", targetAMInner);
-        //End As Above
+
+        if(gamepad2.right_trigger > .9){
+            AMInner.setPower(-.5);
+        } else if(gamepad2.left_trigger >.9){
+            AMInner.setPower(.6);
+        } else{
+            AMInner.setPower(ffAMI);
+        }
+
+
+        telemetry.addData("posOuter:", armPosAMO);
+        telemetry.addData("targetAMOuter:", targetAMOuter);
+        // End As Above
         
         
         
         //Arm Height controls non-manual, Add in corresponding values for other part of the ARM
+        /*
         if(gamepad2.a){
-            targetAMOuter = (int) 0.0;//Insert Ideal Value Highest
+            targetAMOuter = (int) 750.0;//Insert Ideal Value Highest
             targetAMInner = (int) 0.0;//^^
         } else if(gamepad2.b) {
             targetAMOuter = (int) 1.0;//Middle Value
@@ -160,6 +175,7 @@ public class MecanumDrive extends OpMode {
                 targetAMInner = (int) (targetAMInner - 0.0);//Insert Value
             }
         }
+        */
         //End^^
         
         //Begin Claw Servo Code :(
@@ -167,19 +183,19 @@ public class MecanumDrive extends OpMode {
         double leftInital = 0.0; //Set Value
 		double rightInital = 0.0;//^^
 		
-		armRight.setPosition(leftInital);
-		armLeft.setPosition(rightInital);
+//		armRight.setPosition(leftInital);
+//		armLeft.setPosition(rightInital);
         
 		//To Close
 		if(gamepad2.right_bumper){
-			armRight.setPosition(0.0); //SetValue
-			armLeft.setPosition(0.0); //SetValue	
+//			armRight.setPosition(0.0); //SetValue
+//			armLeft.setPosition(0.0); //SetValue
 		} 
 		
 		// Release
 		if (gamepad2.left_bumper){
-			armRight.setPosition(rightInital);
-			armLeft.setPosition(leftInital);
+//			armRight.setPosition(rightInital);
+//			armLeft.setPosition(leftInital);
 		}
         
         
