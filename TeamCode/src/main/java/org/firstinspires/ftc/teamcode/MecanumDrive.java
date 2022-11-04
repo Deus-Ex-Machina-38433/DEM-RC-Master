@@ -21,9 +21,9 @@ public class MecanumDrive extends OpMode {
     //Begin Servo Config
     //TODO Set Values Below
     static double leftReleased = 0.0;
-    static double rightReleased = 0.0;
+    static double rightReleased = 0.8;
     static double leftClosed = 0.5;
-    static double rightClosed = 1.0;
+    static double rightClosed = 0.0;
     //End Servo Config
 
     //Begin Arm Outer Motor PID Declarations
