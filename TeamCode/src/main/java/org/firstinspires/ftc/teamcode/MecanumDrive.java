@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.util.Range;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -13,14 +14,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.tensorflow.lite.Tensor;
 
+@Config //This is needed to change variables marked as 'static' in Dashboard
 @TeleOp(name = "MecanumDrive")
 public class MecanumDrive extends OpMode {
+
+    //Begin Servo Config
+    //TODO Set Values Below
+    static double leftReleased = 0.0;
+    static double rightReleased = 0.0;
+    static double leftClosed = 0.5;
+    static double rightClosed = 1.0;
+    //End Servo Config
 
     //Begin Arm Outer Motor PID Declarations
     private PIDController controllerAMO;
 
-    public static double pAMO = 0, iAMO = 0, dAMO =0;
-    public static double fAMO = 0.25;
+    public static double pAMO = 0.12, iAMO = 0, dAMO =0.0002;
+    public static double fAMO = 0.28;
 
     private final double ticks_in_degreeAMO = 1993.6 / 360.0; //Insert Value
     private final double ticks_per_RevAMO = 1993.6; //Insert Value
@@ -31,8 +41,8 @@ public class MecanumDrive extends OpMode {
     //Begin Arm Inner Motor PID Declarations
     private PIDController controllerAMI;
 
-    public static double pAMI = 0, iAMI = 0, dAMI =0;
-    public static double fAMI =.3;
+    public static double pAMI = 0.12, iAMI = 0, dAMI =0.0002;
+    public static double fAMI =.28;
 
     private final double ticks_in_degreeAMI = 751.8 / 360.0; //Insert Value
     private final double ticks_per_RevAMI = 751.8; //Insert Value
@@ -47,7 +57,7 @@ public class MecanumDrive extends OpMode {
     DcMotorEx LeftBackMotor; // Left Back Motor 2
     // End^^
     
-//    Servo armRight, armLeft;
+    Servo armRight, armLeft;
 
     @Override
     public void init(){
@@ -73,8 +83,8 @@ public class MecanumDrive extends OpMode {
         
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         
-//        armRight = hardwareMap.servo.get("armRight");
-//        armLeft = hardwareMap.servo.get("armLeft");
+        armRight = hardwareMap.servo.get("armRight");
+        armLeft = hardwareMap.servo.get("armLeft");
     }
 
     @Override
@@ -105,7 +115,7 @@ public class MecanumDrive extends OpMode {
 
         // LAST DITCH ROBOT RESET CODE
         // DO NOT ACTIVE UNLESS ABSOLUTELY NEEDED
-        if(gamepad1.a){
+        if(gamepad1.x){
             LeftFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             RightFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             LeftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -124,14 +134,14 @@ public class MecanumDrive extends OpMode {
         //double PowerAMO = (pidAMO + ffAMO);
 
         if(gamepad2.right_bumper){
-            AMOuter.setPower(.6);
+            AMOuter.setPower(.9);
         } else if(gamepad2.left_bumper){
             AMOuter.setPower(-.1);
         } else{
             AMOuter.setPower(ffAMO);
         }
 
-        int targetAMInner = 0; // Set ctual value or toss in a reset
+        int targetAMInner = 0; // Set actual value or toss in a reset
         controllerAMI.setPID(pAMI, iAMI, dAMI);
         int armPosAMI = AMInner.getCurrentPosition();
         double pidAMI = controllerAMI.calculate(armPosAMI, targetAMInner);
@@ -179,23 +189,22 @@ public class MecanumDrive extends OpMode {
         //End^^
         
         //Begin Claw Servo Code :(
-		
-        double leftInital = 0.0; //Set Value
-		double rightInital = 0.0;//^^
+
+
 		
 //		armRight.setPosition(leftInital);
 //		armLeft.setPosition(rightInital);
         
-		//To Close
-		if(gamepad2.right_bumper){
-//			armRight.setPosition(0.0); //SetValue
-//			armLeft.setPosition(0.0); //SetValue
-		} 
-		
+//		To Close
+		if(gamepad2.dpad_down){
+			armRight.setPosition(rightClosed);
+			armLeft.setPosition(leftClosed);
+		}
+
 		// Release
-		if (gamepad2.left_bumper){
-//			armRight.setPosition(rightInital);
-//			armLeft.setPosition(leftInital);
+		if (gamepad2.dpad_up){
+			armRight.setPosition(rightReleased);
+			armLeft.setPosition(leftReleased);
 		}
         
         

@@ -16,7 +16,7 @@ public class PIDforArmMotors extends OpMode {
     private PIDController controller;
 
     public static double p = 0, i = 0, d =0;
-    public static double f = 0.3;
+    public static double f = 0;
 
     public static int target = 0;
 
@@ -29,7 +29,7 @@ public class PIDforArmMotors extends OpMode {
         controller = new PIDController(p, i, d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        AMInner = hardwareMap.get(DcMotorEx.class, "AMInner");
+        AMInner = hardwareMap.get(DcMotorEx.class, "AMOuter");
     }
 
     @Override
