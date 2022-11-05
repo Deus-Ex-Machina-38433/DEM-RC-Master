@@ -177,21 +177,21 @@ public class MecanumDrive extends OpMode {
             if (targetAMOuter > 800) {
                 targetAMOuter = 550;
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(150);
                 } catch (InterruptedException e) {
                 }
             }
             if (targetAMOuter > 500) {
                 targetAMOuter = 350;
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(150);
                 } catch (InterruptedException e) {
                 }
             }
             if (targetAMOuter > 300) {
-                targetAMOuter = 500;
+                targetAMOuter = 200;
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(150);
                 } catch (InterruptedException e) {
                 }
             }
