@@ -20,17 +20,42 @@ public class MecanumDrive extends OpMode {
 
     //Begin Servo Config
     //TODO Set Values Below
-    static double leftReleased = 0.0;
-    static double rightReleased = 0.8;
-    static double leftClosed = 0.5;
-    static double rightClosed = 0.0;
+    public static double leftReleased = 0.0;
+    public static double rightReleased = 0.5;
+    public static double leftClosed = 0.5;
+    public static double rightClosed = 0.0;
     //End Servo Config
+
+    //Preset Values
+    public static int GLInner = -35;
+    public static int GLOuter = 200;
+
+    public static int LLInner = 0;
+    public static int LLOuter = 350;
+
+    public static int MLInner = -200;
+    public static int MLOuter = 700;
+
+    public static int HLInner = -175;
+    public static int HLOuter = 900;
+
+    //Begin Arm Values
+    public static double outerSpeed = 3;
+    public static double innerSpeed = 3;
+
+    public static int outerUpperLimit = 600;
+    public static int outerLowerLimit = 100;
+    public static int innerUpperLimit = 300;
+    public static int innerLowerLimit = -300;
+    //End Arm Values
 
     //Begin Arm Outer Motor PID Declarations
     private PIDController controllerAMO;
 
-    public static double pAMO = 0.12, iAMO = 0, dAMO =0.0002;
+    public static double pAMO = 0.04, iAMO = 0, dAMO =0.0002;
     public static double fAMO = 0.28;
+
+    public static int targetAMOuter = 100;
 
     private final double ticks_in_degreeAMO = 1993.6 / 360.0; //Insert Value
     private final double ticks_per_RevAMO = 1993.6; //Insert Value
@@ -41,8 +66,10 @@ public class MecanumDrive extends OpMode {
     //Begin Arm Inner Motor PID Declarations
     private PIDController controllerAMI;
 
-    public static double pAMI = 0.12, iAMI = 0, dAMI =0.0002;
+    public static double pAMI = 0.04, iAMI = 0, dAMI =0.00015;
     public static double fAMI =.28;
+
+    public static int targetAMInner = 0;
 
     private final double ticks_in_degreeAMI = 751.8 / 360.0; //Insert Value
     private final double ticks_per_RevAMI = 751.8; //Insert Value
@@ -99,6 +126,7 @@ public class MecanumDrive extends OpMode {
             speedMultiply = .69; //Nice
         }
 
+
         double lateral = -gamepad1.left_stick_x;
         double longitudinal = gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
@@ -126,37 +154,61 @@ public class MecanumDrive extends OpMode {
         }
 
         // Arm Outer Motor PID Code Begin
-        int targetAMOuter = 0; // Set actual value or toss in a reset
+         // Set actual value or toss in a reset
         controllerAMO.setPID(pAMO, iAMO, dAMO);
         int armPosAMO = AMOuter.getCurrentPosition();
         double pidAMO = controllerAMO.calculate(armPosAMO, targetAMOuter);
         double ffAMO = Math.cos(Math.toRadians(targetAMOuter/ticks_in_degreeAMO)) * fAMO;
-        //double PowerAMO = (pidAMO + ffAMO);
+        double powerAMO = (pidAMO + ffAMO);
+
+        AMOuter.setPower(powerAMO * 1/2);
 
         if(gamepad2.right_bumper){
-            AMOuter.setPower(.9);
+            if(targetAMOuter > outerUpperLimit) {} else {targetAMOuter += outerSpeed;}
         } else if(gamepad2.left_bumper){
-            AMOuter.setPower(-.1);
-        } else{
-            AMOuter.setPower(ffAMO);
+            if(targetAMOuter < outerLowerLimit) {} else {targetAMOuter -= outerSpeed;}
         }
 
-        int targetAMInner = 0; // Set actual value or toss in a reset
+//        Ground Level
+        if(gamepad2.a) {
+            targetAMInner = GLInner;
+            targetAMOuter = GLOuter;
+        }
+
+//          Low Level
+        if(gamepad2.b){
+            targetAMInner = LLInner;
+            targetAMOuter = LLOuter;
+        }
+
+//        Middle Level
+        if(gamepad2.x){
+            targetAMInner = MLInner;
+            targetAMOuter = MLOuter;
+        }
+//          High Level
+        if(gamepad2.y){
+            targetAMInner = HLInner;
+            targetAMOuter = HLOuter;
+        }
+
+         // Set actual value or toss in a reset
         controllerAMI.setPID(pAMI, iAMI, dAMI);
         int armPosAMI = AMInner.getCurrentPosition();
         double pidAMI = controllerAMI.calculate(armPosAMI, targetAMInner);
         double ffAMI = Math.cos(Math.toRadians(targetAMInner/ticks_in_degreeAMI)) * fAMI;
-        double velocityAMI = (pidAMI + ffAMI);
+        double powerAMI = (pidAMI + ffAMI);
         telemetry.addData("posInner:", armPosAMI);
         telemetry.addData("targetAMInner:", targetAMInner);
 
-        if(gamepad2.right_trigger > .9){
-            AMInner.setPower(-.5);
-        } else if(gamepad2.left_trigger >.9){
-            AMInner.setPower(.6);
-        } else{
-            AMInner.setPower(ffAMI);
+        AMInner.setPower(powerAMI);
+
+        if(gamepad2.right_trigger > 0.4){
+            if (targetAMInner > innerUpperLimit) {} else {targetAMInner += innerSpeed;}
+        } else if(gamepad2.left_trigger > 0.4){
+            if (targetAMInner < innerLowerLimit) {} else {targetAMInner -= innerSpeed;}
         }
+//        targetAMInner += (gamepad2.right_trigger - gamepad2.left_trigger);
 
 
         telemetry.addData("posOuter:", armPosAMO);
@@ -196,13 +248,13 @@ public class MecanumDrive extends OpMode {
 //		armLeft.setPosition(rightInital);
         
 //		To Close
-		if(gamepad2.dpad_down){
+		if(gamepad2.dpad_up){
 			armRight.setPosition(rightClosed);
 			armLeft.setPosition(leftClosed);
 		}
 
 		// Release
-		if (gamepad2.dpad_up){
+		if (gamepad2.dpad_down){
 			armRight.setPosition(rightReleased);
 			armLeft.setPosition(leftReleased);
 		}
