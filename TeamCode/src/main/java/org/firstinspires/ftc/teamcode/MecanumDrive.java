@@ -165,13 +165,36 @@ public class MecanumDrive extends OpMode {
 
         if(gamepad2.right_bumper){
             if(targetAMOuter > outerUpperLimit) {} else {targetAMOuter += outerSpeed;}
+//            targetAMOuter += outerSpeed;
         } else if(gamepad2.left_bumper){
             if(targetAMOuter < outerLowerLimit) {} else {targetAMOuter -= outerSpeed;}
+//            targetAMOuter -= outerSpeed;
         }
 
 //        Ground Level
         if(gamepad2.a) {
             targetAMInner = GLInner;
+            if (targetAMOuter > 800) {
+                targetAMOuter = 550;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+            }
+            if (targetAMOuter > 500) {
+                targetAMOuter = 350;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+            }
+            if (targetAMOuter > 300) {
+                targetAMOuter = 500;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+            }
             targetAMOuter = GLOuter;
         }
 
@@ -197,16 +220,18 @@ public class MecanumDrive extends OpMode {
         int armPosAMI = AMInner.getCurrentPosition();
         double pidAMI = controllerAMI.calculate(armPosAMI, targetAMInner);
         double ffAMI = Math.cos(Math.toRadians(targetAMInner/ticks_in_degreeAMI)) * fAMI;
-        double powerAMI = (pidAMI + ffAMI);
+        double powerAMI = (pidAMI*1/2 + ffAMI);
         telemetry.addData("posInner:", armPosAMI);
         telemetry.addData("targetAMInner:", targetAMInner);
 
         AMInner.setPower(powerAMI);
 
         if(gamepad2.right_trigger > 0.4){
-            if (targetAMInner > innerUpperLimit) {} else {targetAMInner += innerSpeed;}
+//            if (targetAMInner > innerUpperLimit) {} else {targetAMInner += innerSpeed;}
+            targetAMInner += innerSpeed;
         } else if(gamepad2.left_trigger > 0.4){
-            if (targetAMInner < innerLowerLimit) {} else {targetAMInner -= innerSpeed;}
+//            if (targetAMInner < innerLowerLimit) {} else {targetAMInner -= innerSpeed;}
+            targetAMInner -= innerSpeed;
         }
 //        targetAMInner += (gamepad2.right_trigger - gamepad2.left_trigger);
 
