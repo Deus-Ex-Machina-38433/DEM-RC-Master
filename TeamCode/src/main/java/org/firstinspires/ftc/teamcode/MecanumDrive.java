@@ -28,16 +28,16 @@ public class MecanumDrive extends OpMode {
 
     //Preset Values
     public static int GLInner = -35;
-    public static int GLOuter = 200;
+    public static int GLOuter = 35;
 
     public static int LLInner = 0;
-    public static int LLOuter = 350;
+    public static int LLOuter = 185;
 
     public static int MLInner = -200;
-    public static int MLOuter = 700;
+    public static int MLOuter = 535;
 
     public static int HLInner = -175;
-    public static int HLOuter = 900;
+    public static int HLOuter = 735;
 
     //Begin Arm Values
     public static double outerSpeed = 3;
@@ -144,6 +144,7 @@ public class MecanumDrive extends OpMode {
         // LAST DITCH ROBOT RESET CODE
         // DO NOT ACTIVE UNLESS ABSOLUTELY NEEDED
         if(gamepad1.x){
+            if(gamepad1.dpad_up){
             LeftFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             RightFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             LeftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -151,6 +152,7 @@ public class MecanumDrive extends OpMode {
             AMOuter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             AMInner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             // Make better Reset thing, thatll mess with stuff
+            }
         }
 
         // Arm Outer Motor PID Code Begin
@@ -164,10 +166,10 @@ public class MecanumDrive extends OpMode {
         AMOuter.setPower(powerAMO * 1/2);
 
         if(gamepad2.right_bumper){
-            if(targetAMOuter > outerUpperLimit) {} else {targetAMOuter += outerSpeed;}
+            if (gamepad1.b) {targetAMOuter += outerSpeed;} else {if(targetAMOuter > outerUpperLimit) {} else {targetAMOuter += outerSpeed;}}
 //            targetAMOuter += outerSpeed;
         } else if(gamepad2.left_bumper){
-            if(targetAMOuter < outerLowerLimit) {} else {targetAMOuter -= outerSpeed;}
+            if (gamepad1.b) {targetAMOuter -= outerSpeed;} else {if(targetAMOuter < outerLowerLimit) {} else {targetAMOuter -= outerSpeed;}}
 //            targetAMOuter -= outerSpeed;
         }
 
@@ -227,11 +229,11 @@ public class MecanumDrive extends OpMode {
         AMInner.setPower(powerAMI);
 
         if(gamepad2.right_trigger > 0.4){
-//            if (targetAMInner > innerUpperLimit) {} else {targetAMInner += innerSpeed;}
-            targetAMInner += innerSpeed;
+            if (gamepad1.b) {targetAMInner += innerSpeed;} else {if (targetAMInner > innerUpperLimit) {} else {targetAMInner += innerSpeed;}}
+//            targetAMInner += innerSpeed;
         } else if(gamepad2.left_trigger > 0.4){
-//            if (targetAMInner < innerLowerLimit) {} else {targetAMInner -= innerSpeed;}
-            targetAMInner -= innerSpeed;
+            if (gamepad1.b) {targetAMInner -= innerSpeed;} else {if (targetAMInner < innerLowerLimit) {} else {targetAMInner -= innerSpeed;}}
+//            targetAMInner -= innerSpeed;
         }
 //        targetAMInner += (gamepad2.right_trigger - gamepad2.left_trigger);
 

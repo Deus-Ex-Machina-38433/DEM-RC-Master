@@ -97,7 +97,46 @@ public class AutoBlue extends LinearOpMode {
         armRight = hardwareMap.servo.get("armRight");
         armLeft = hardwareMap.servo.get("armLeft");
 
+        LeftFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftFrontMotor");
+        RightFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightFrontMotor");
+        LeftBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftBackMotor");
+        RightBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightBackMotor");
+        LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
+        // Misc Motors
+
+        //Begin Inner Motor PID Inits
+        controllerAMI = new PIDController(pAMI, iAMI, dAMI);
+        AMInner = hardwareMap.get(DcMotorEx.class, "AMInner");
+
+        //Begin Arm Outer Motor PID Inits
+        controllerAMO = new PIDController(pAMO, iAMO, dAMO);
+        AMOuter = hardwareMap.get(DcMotorEx.class, "AMOuter");
+        // End as Above
+
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        armRight = hardwareMap.servo.get("armRight");
+        armLeft = hardwareMap.servo.get("armLeft");
+
+        waitForStart();
+
+        sleep(1500);
+
+        RightBackMotor.setPower(.6);
+        RightFrontMotor.setPower(.6);
+        LeftFrontMotor.setPower(.6);
+        LeftBackMotor.setPower(.6);
+        AMInner.setPower(.5);
+
+        sleep(900);
+
+        RightBackMotor.setPower(0);
+        RightFrontMotor.setPower(0);
+        LeftFrontMotor.setPower(0);
+        LeftBackMotor.setPower(0);
+        AMInner.setPower(.0);
 
     }
 
