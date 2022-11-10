@@ -18,6 +18,12 @@ import org.tensorflow.lite.Tensor;
 @TeleOp(name = "MecanumDrive")
 public class MecanumDrive extends OpMode {
 
+    /*
+    Relevant Stuff:
+    inner: -520
+    outer: 480
+     */
+
     //Begin Servo Config
     //TODO Set Values Below
     public static double leftReleased = 0.0;
@@ -26,24 +32,36 @@ public class MecanumDrive extends OpMode {
     public static double rightClosed = 0.0;
     //End Servo Config
 
+    //Offset Values
+    public static int offsetInner = 0;
+    public static int offsetOuter = 0;
+
+    //Arm PID Speed Values
+    public static double pidMultiplyOuter = 0.5;
+    public static double pidMultiplyInner = 1;
+
     //Preset Values
-    public static int GLInner = -35;
-    public static int GLOuter = 35;
+    //gamepad2.a
+    public static int GLInner = 0;
+    public static int GLOuter = 40;
 
-    public static int LLInner = 0;
-    public static int LLOuter = 185;
+    //gamepad2.b
+    public static int LLInner = -121;
+    public static int LLOuter = 265;
 
-    public static int MLInner = -200;
-    public static int MLOuter = 535;
+    //gamepad2.x
+    public static int MLInner = -165;
+    public static int MLOuter = 540;
 
-    public static int HLInner = -175;
-    public static int HLOuter = 735;
+    //gamepad2.y
+    public static int HLInner = -140;
+    public static int HLOuter = 740;
 
     //Begin Arm Values
     public static double outerSpeed = 3;
     public static double innerSpeed = 3;
 
-    public static int outerUpperLimit = 600;
+    public static int outerUpperLimit = 800;
     public static int outerLowerLimit = 100;
     public static int innerUpperLimit = 300;
     public static int innerLowerLimit = -300;
@@ -55,7 +73,7 @@ public class MecanumDrive extends OpMode {
     public static double pAMO = 0.04, iAMO = 0, dAMO =0.0002;
     public static double fAMO = 0.28;
 
-    public static int targetAMOuter = 100;
+    public static int targetAMOuter = 480;
 
     private final double ticks_in_degreeAMO = 1993.6 / 360.0; //Insert Value
     private final double ticks_per_RevAMO = 1993.6; //Insert Value
@@ -69,7 +87,7 @@ public class MecanumDrive extends OpMode {
     public static double pAMI = 0.04, iAMI = 0, dAMI =0.00015;
     public static double fAMI =.28;
 
-    public static int targetAMInner = 0;
+    public static int targetAMInner = -520;
 
     private final double ticks_in_degreeAMI = 751.8 / 360.0; //Insert Value
     private final double ticks_per_RevAMI = 751.8; //Insert Value
@@ -78,10 +96,10 @@ public class MecanumDrive extends OpMode {
     //End As Above
 
     // Drivetrain Motors
-    DcMotorEx RightFrontMotor; // Right Front Motor 1
     DcMotorEx LeftFrontMotor; // Left Front Motor 0
-    DcMotorEx RightBackMotor; // Right Back Motor 3
+    DcMotorEx RightFrontMotor; // Right Front Motor 1
     DcMotorEx LeftBackMotor; // Left Back Motor 2
+    DcMotorEx RightBackMotor; // Right Back Motor 3
     // End^^
     
     Servo armRight, armLeft;
@@ -118,9 +136,9 @@ public class MecanumDrive extends OpMode {
     public void loop(){
 
         double speedMultiply;
-        if(gamepad1.right_trigger > .75){
+        if(gamepad1.right_trigger > .50){
             speedMultiply = 1;
-        } else if(gamepad1.left_trigger >.75){
+        } else if(gamepad1.left_trigger >.50){
             speedMultiply = .25;
         } else{
             speedMultiply = .69; //Nice
@@ -161,75 +179,83 @@ public class MecanumDrive extends OpMode {
         int armPosAMO = AMOuter.getCurrentPosition();
         double pidAMO = controllerAMO.calculate(armPosAMO, targetAMOuter);
         double ffAMO = Math.cos(Math.toRadians(targetAMOuter/ticks_in_degreeAMO)) * fAMO;
-        double powerAMO = (pidAMO + ffAMO);
+        double powerAMO = ((pidAMO + ffAMO));
+        telemetry.addData("Ignore if not Programming", "");
+        telemetry.addData("pidAMO: ", pidAMO);
+        telemetry.addData("ffAMO: ", ffAMO);
+        telemetry.addData("powerAMO: ", powerAMO);
+        telemetry.addData("AMOuter Power: ", powerAMO*pidMultiplyOuter);
 
-        AMOuter.setPower(powerAMO * 1/2);
+        AMOuter.setPower(powerAMO*pidMultiplyOuter);
+
 
         if(gamepad2.right_bumper){
-            if (gamepad1.b) {targetAMOuter += outerSpeed;} else {if(targetAMOuter > outerUpperLimit) {} else {targetAMOuter += outerSpeed;}}
+            if (gamepad1.b) {targetAMOuter += outerSpeed;} else {if(targetAMOuter <= (outerUpperLimit + offsetOuter)) {targetAMOuter += outerSpeed;}}
 //            targetAMOuter += outerSpeed;
         } else if(gamepad2.left_bumper){
-            if (gamepad1.b) {targetAMOuter -= outerSpeed;} else {if(targetAMOuter < outerLowerLimit) {} else {targetAMOuter -= outerSpeed;}}
+            if (gamepad1.b) {targetAMOuter -= outerSpeed;} else {if(targetAMOuter >= (outerLowerLimit + offsetOuter)) {targetAMOuter -= outerSpeed;}}
 //            targetAMOuter -= outerSpeed;
         }
 
+         // Set actual value or toss in a reset
+        controllerAMI.setPID(pAMI, iAMI, dAMI);
+        int armPosAMI = AMInner.getCurrentPosition();
+        double pidAMI = controllerAMI.calculate(armPosAMI, (targetAMInner + offsetInner));
+        double ffAMI = Math.cos(Math.toRadians((targetAMInner+offsetInner)/ticks_in_degreeAMI)) * fAMI;
+        double powerAMI = (pidAMI*1/2 + ffAMI);
+        telemetry.addData("posInner:", armPosAMI);
+        telemetry.addData("targetAMInner:", targetAMInner);
+
+        AMInner.setPower(powerAMI/pidMultiplyInner);
+
+
 //        Ground Level
         if(gamepad2.a) {
-            targetAMInner = GLInner;
-            if (targetAMOuter > 800) {
+            targetAMInner = GLInner + offsetInner;
+            if ((targetAMOuter + offsetOuter) > 800) {
                 targetAMOuter = 550;
                 try {
                     Thread.sleep(150);
                 } catch (InterruptedException e) {
                 }
             }
-            if (targetAMOuter > 500) {
+            if ((targetAMOuter + offsetOuter) > 500) {
                 targetAMOuter = 350;
                 try {
                     Thread.sleep(150);
                 } catch (InterruptedException e) {
                 }
             }
-            if (targetAMOuter > 300) {
+            if ((targetAMOuter + offsetOuter) > 300) {
                 targetAMOuter = 200;
                 try {
                     Thread.sleep(150);
                 } catch (InterruptedException e) {
                 }
             }
-            targetAMOuter = GLOuter;
+            targetAMOuter = GLOuter + offsetOuter;
         }
 
 //          Low Level
         if(gamepad2.b){
-            targetAMInner = LLInner;
-            targetAMOuter = LLOuter;
+            targetAMInner = LLInner + offsetInner;
+            targetAMOuter = LLOuter + offsetOuter;
         }
 
 //        Middle Level
         if(gamepad2.x){
-            targetAMInner = MLInner;
-            targetAMOuter = MLOuter;
+            targetAMInner = MLInner + offsetInner;
+            targetAMOuter = MLOuter + offsetOuter;
         }
 //          High Level
         if(gamepad2.y){
-            targetAMInner = HLInner;
-            targetAMOuter = HLOuter;
+            targetAMInner = HLInner + offsetInner;
+            targetAMOuter = HLOuter + offsetOuter;
         }
 
-         // Set actual value or toss in a reset
-        controllerAMI.setPID(pAMI, iAMI, dAMI);
-        int armPosAMI = AMInner.getCurrentPosition();
-        double pidAMI = controllerAMI.calculate(armPosAMI, targetAMInner);
-        double ffAMI = Math.cos(Math.toRadians(targetAMInner/ticks_in_degreeAMI)) * fAMI;
-        double powerAMI = (pidAMI*1/2 + ffAMI);
-        telemetry.addData("posInner:", armPosAMI);
-        telemetry.addData("targetAMInner:", targetAMInner);
-
-        AMInner.setPower(powerAMI);
 
         if(gamepad2.right_trigger > 0.4){
-            if (gamepad1.b) {targetAMInner += innerSpeed;} else {if (targetAMInner > innerUpperLimit) {} else {targetAMInner += innerSpeed;}}
+            if (gamepad1.b) {targetAMInner += innerSpeed;} else {if (targetAMInner > (innerUpperLimit+ offsetInner)) {} else {targetAMInner += innerSpeed;}}
 //            targetAMInner += innerSpeed;
         } else if(gamepad2.left_trigger > 0.4){
             if (gamepad1.b) {targetAMInner -= innerSpeed;} else {if (targetAMInner < innerLowerLimit) {} else {targetAMInner -= innerSpeed;}}
