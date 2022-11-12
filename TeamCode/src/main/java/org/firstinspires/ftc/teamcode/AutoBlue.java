@@ -122,26 +122,26 @@ public class AutoBlue extends LinearOpMode {
 
         waitForStart();
         
-        while(opModeIsActive){
-             
-        }
-        
         sleep(1500);
+        boolean loop = true;
+        while(true) {
+            while (loop) {
+                loop = false;
+                RightBackMotor.setPower(.6);
+                RightFrontMotor.setPower(.6);
+                LeftFrontMotor.setPower(.6);
+                LeftBackMotor.setPower(.6);
+                AMInner.setPower(.5);
 
-        RightBackMotor.setPower(.6);
-        RightFrontMotor.setPower(.6);
-        LeftFrontMotor.setPower(.6);
-        LeftBackMotor.setPower(.6);
-        AMInner.setPower(.5);
+                sleep(900);
 
-        sleep(900);
-
-        RightBackMotor.setPower(0);
-        RightFrontMotor.setPower(0);
-        LeftFrontMotor.setPower(0);
-        LeftBackMotor.setPower(0);
-        AMInner.setPower(.0);
-
+                RightBackMotor.setPower(0);
+                RightFrontMotor.setPower(0);
+                LeftFrontMotor.setPower(0);
+                LeftBackMotor.setPower(0);
+                AMInner.setPower(.0);
+            }
+        }
     }
 
 }

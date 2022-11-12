@@ -33,8 +33,10 @@ public class MecanumDrive extends OpMode {
     //End Servo Config
 
     //Offset Values
-    public static int offsetInner = 0;
-    public static int offsetOuter = 0;
+    public static int offsetInner = 200;
+    public static int offsetOuter = -192;
+    public static int targetAMInner = -520;
+    public static int targetAMOuter = 480;
 
     //Arm PID Speed Values
     public static double pidMultiplyOuter = 0.5;
@@ -73,7 +75,7 @@ public class MecanumDrive extends OpMode {
     public static double pAMO = 0.04, iAMO = 0, dAMO =0.0002;
     public static double fAMO = 0.28;
 
-    public static int targetAMOuter = 480;
+
 
     private final double ticks_in_degreeAMO = 1993.6 / 360.0; //Insert Value
     private final double ticks_per_RevAMO = 1993.6; //Insert Value
@@ -87,7 +89,7 @@ public class MecanumDrive extends OpMode {
     public static double pAMI = 0.04, iAMI = 0, dAMI =0.00015;
     public static double fAMI =.28;
 
-    public static int targetAMInner = -520;
+
 
     private final double ticks_in_degreeAMI = 751.8 / 360.0; //Insert Value
     private final double ticks_per_RevAMI = 751.8; //Insert Value
@@ -141,7 +143,7 @@ public class MecanumDrive extends OpMode {
         } else if(gamepad1.left_trigger >.50){
             speedMultiply = .25;
         } else{
-            speedMultiply = .69; //Nice
+            speedMultiply = .69; //Nice - why would you set it to this
         }
 
 
@@ -180,11 +182,7 @@ public class MecanumDrive extends OpMode {
         double pidAMO = controllerAMO.calculate(armPosAMO, targetAMOuter);
         double ffAMO = Math.cos(Math.toRadians(targetAMOuter/ticks_in_degreeAMO)) * fAMO;
         double powerAMO = ((pidAMO + ffAMO));
-        telemetry.addData("Ignore if not Programming", "");
-        telemetry.addData("pidAMO: ", pidAMO);
-        telemetry.addData("ffAMO: ", ffAMO);
-        telemetry.addData("powerAMO: ", powerAMO);
-        telemetry.addData("AMOuter Power: ", powerAMO*pidMultiplyOuter);
+
 
         AMOuter.setPower(powerAMO*pidMultiplyOuter);
 
@@ -311,7 +309,12 @@ public class MecanumDrive extends OpMode {
 			armRight.setPosition(rightReleased);
 			armLeft.setPosition(leftReleased);
 		}
-        
+
+        telemetry.addData("Ignore if not Programming", "");
+        telemetry.addData("pidAMO: ", pidAMO);
+        telemetry.addData("ffAMO: ", ffAMO);
+        telemetry.addData("powerAMO: ", powerAMO);
+        telemetry.addData("AMOuter Power: ", powerAMO*pidMultiplyOuter);
         
         /*
         TODO:
