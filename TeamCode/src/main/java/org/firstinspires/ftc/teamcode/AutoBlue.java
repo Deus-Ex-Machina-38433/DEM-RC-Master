@@ -121,7 +121,11 @@ public class AutoBlue extends LinearOpMode {
         armLeft = hardwareMap.servo.get("armLeft");
 
         waitForStart();
-
+        
+        while(opModeIsActive){
+             
+        }
+        
         sleep(1500);
 
         RightBackMotor.setPower(.6);
