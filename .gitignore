@@ -85,3 +85,8 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+*.vsidx
+*.lock
+.vs/DEM-RC-Master/v17/.suo
+*.json
+*.sqlite
