@@ -29,9 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -41,28 +42,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-/**
- * This 2022-2023 OpMode illustrates the basics of using the TensorFlow Object Detection API to
- * determine which image is being presented to the robot.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
- * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained below.
- */
-@TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
+@Autonomous(name = "Auto")
+public class Auto extends LinearOpMode {
 
-    /*
-     * Specify the source for the Tensor Flow Model.
-     * If the TensorFlowLite object model is included in the Robot Controller App as an "asset",
-     * the OpMode must to load it using loadModelFromAsset().  However, if a team generated model
-     * has been downloaded to the Robot Controller's SD FLASH memory, it must to be loaded using loadModelFromFile()
-     * Here we assume it's an Asset.    Also see method initTfod() below .
-     */
-    private static final String TFOD_MODEL_ASSET = "PowerPlaySignalSleeve.tflite";
-    // private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/CustomTeamModel.tflite";
+    private static final String TFOD_MODEL_ASSET = "PowerPlaySignalSleeve.tflite"; //source
 
 
     private static final String[] LABELS = {
@@ -70,33 +53,16 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             "Case2",
             "Case3"
     };
-
-    /*
-     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-     * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-     * web site at https://developer.vuforia.com/license-manager.
-     *
-     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
-     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
-     * and paste it in to your code on the next line, between the double quotes.
-     */
     private static final String VUFORIA_KEY =
             "ASqSbeX/////AAABmUBmlWTqX05pvrN5JxCtZBhIxHG+fohR0d6YdJfowwZOdC/W3lhUP1X3Uv2RjGgO6IwIAIaMIHL3J/S9C1KaxpwVJLCBAylyd9Emd/5mgZRQ5y8H7HJ3Ar9Yos9YHkJSFHxJmdAi9lN7YXqsgR2X13nMgOtx91gTHK5flOSpd3Odag3ZocB7RLhRC9lYPLajlU1LduMsx1Df4c+q7Xk/2ONlN5tmwWdhquVAS3oWpUV/+lakX19ilQseYhrNamZj6Napp5GTAYxCBD+QrD0Dk5vfZTOdXEHP9Fygb/aDWQUtwNjXV9JnTobKkr1apVe6+UmGVZgOKgjD8AEvbPIDcLOXNxTnnQuJgt9V90EJKVTm";
 
-    /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
-     */
     private VuforiaLocalizer vuforia;
-
-    /**
-     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
-     * Detection engine.
-     */
     private TFObjectDetector tfod;
+
+    DcMotorEx RightFrontMotor;
+    DcMotorEx LeftFrontMotor;
+    DcMotorEx RightBackMotor;
+    DcMotorEx LeftBackMotor;
 
     @Override
     public void runOpMode() {
@@ -121,10 +87,12 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             // (typically 16/9).
             tfod.setZoom(1.0, 16.0/9.0);
         }
-
-        /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start op mode");
-        telemetry.update();
+        LeftFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftFrontMotor");
+        RightFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightFrontMotor");
+        LeftBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftBackMotor");
+        RightBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightBackMotor");
+        LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
         waitForStart();
 
         if (opModeIsActive()) {
@@ -135,7 +103,6 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Objects Detected", updatedRecognitions.size());
-
                         // step through the list of recognitions and display image position/size information for each one
                         // Note: "Image number" refers to the randomized image orientation/number
                         for (Recognition recognition : updatedRecognitions) {
@@ -179,7 +146,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.75f;
+        tfodParameters.minResultConfidence = 0.5f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 300;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);

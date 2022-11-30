@@ -16,6 +16,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoTest extends OpMode {
 
     Servo armRight, armLeft;
+    public static double leftReleased = 0.0;
+    public static double rightReleased = 0.5;
+    public static double leftClosed = 0.5;
+    public static double rightClosed = 0.0;
 
     @Override
     public void init(){
@@ -25,15 +29,15 @@ public class ServoTest extends OpMode {
 
     @Override
     public void loop(){
-        armLeft.setPosition(0);
-        armRight.setPosition(1);
+        armLeft.setPosition(leftReleased);
+        armRight.setPosition(rightReleased);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        armLeft.setPosition(1);
-        armRight.setPosition(0);
+        armLeft.setPosition(leftClosed);
+        armRight.setPosition(rightClosed);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {

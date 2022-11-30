@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.hardware.ams.AMSColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -43,6 +44,9 @@ public class AutoBlue extends LinearOpMode {
     public static int innerUpperLimit = 300;
     public static int innerLowerLimit = -300;
     //End Arm Values
+
+    public static double pidMultiplyOuter = 0.5;
+    public static double pidMultiplyInner = 1;
 
     //Begin Arm Outer Motor PID Declarations
     private PIDController controllerAMO;
@@ -124,12 +128,38 @@ public class AutoBlue extends LinearOpMode {
         
         sleep(1500);
         boolean loop = true;
-        while(true) {  
-                targetAMOuter(1350);
-            while (loop) {
-                loop = false;
-                RightBackMotor.setPower(.6);
-                RightFrontMotor.setPower(.6);
+//        while(opModeIsActive()) {;
+//
+////            controllerAMO.setPID(pAMO, iAMO, dAMO);
+////            int armPosAMO = AMOuter.getCurrentPosition();
+////            double pidAMO = controllerAMO.calculate(armPosAMO, targetAMOuter);
+////            double ffAMO = Math.cos(Math.toRadians(targetAMOuter/ticks_in_degreeAMO)) * fAMO;
+////            double powerAMO = ((pidAMO + ffAMO));
+//
+//
+//            //AMOuter.setPower(powerAMO*pidMultiplyOuter);
+//            AMOuter.setTargetPosition(1350);
+//
+//            AMOuter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            AMOuter.setPower(.5);
+//            while (loop && opModeIsActive()) {
+//                loop = false;
+//                RightBackMotor.setPower(.6);
+//                RightFrontMotor.setPower(.6);
+//                LeftFrontMotor.setPower(.6);
+//                LeftBackMotor.setPower(.6);
+//
+//                sleep(900);
+//
+//                RightBackMotor.setPower(0);
+//                RightFrontMotor.setPower(0);
+//                LeftFrontMotor.setPower(0);
+//                LeftBackMotor.setPower(0);
+//            }
+//        }
+
+        RightBackMotor.setPower(.6);
+               RightFrontMotor.setPower(.6);
                 LeftFrontMotor.setPower(.6);
                 LeftBackMotor.setPower(.6);
 
@@ -139,8 +169,22 @@ public class AutoBlue extends LinearOpMode {
                 RightFrontMotor.setPower(0);
                 LeftFrontMotor.setPower(0);
                 LeftBackMotor.setPower(0);
-            }
-        }
+
+//        sleep(300);
+//
+//        RightBackMotor.setPower(-.3);
+//        RightFrontMotor.setPower(-.3);
+//        LeftFrontMotor.setPower(-.3);
+//        LeftBackMotor.setPower(-.3);
+//
+//        sleep( 600);
+//
+//        RightBackMotor.setPower(0);
+//        RightFrontMotor.setPower(0);
+//        LeftFrontMotor.setPower(0);
+//        LeftBackMotor.setPower(0);
+
+
     }
 
 }
