@@ -27,6 +27,7 @@ public class MecanumDrive extends OpMode {
     //Begin Servo Config
     public static double armOpen = 1.0;
     public static double armClose = 0.0;
+    public static double clawPos = armClose;
     //End Servo Config
 
     //Begin Linear Slide Pre-Programmed Heights
@@ -37,9 +38,9 @@ public class MecanumDrive extends OpMode {
 
     //Begin Linear Slide PID
     private PIDController controller;
-    public static double p = 0, i = 0, d =0;
-    public static double f = 0;
-    public static int target;
+    public static double p = 0.01, i = 0, d =0.0001;
+    public static double f = 0.05;
+    public static int target = 0;
     private final double ticks_in_degreeAMO = 1993.6 / 180.0;
     public static double armUpSpeed = 0.2;
     public static double armDownSpeed = -0.2;
@@ -53,7 +54,7 @@ public class MecanumDrive extends OpMode {
     // End^^
 
     DcMotorEx armMotor;
-    Servo arm;
+    Servo claw;
 
     @Override
     public void init(){
@@ -73,11 +74,13 @@ public class MecanumDrive extends OpMode {
 
         controller = new PIDController(p, i, d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        arm = hardwareMap.servo.get("arm");
+        claw = hardwareMap.servo.get("claw");
     }
 
     @Override
     public void loop(){
+
+        claw.setPosition(clawPos);
 
         double speedMultiply;
         if(gamepad1.right_trigger > .50){
@@ -131,31 +134,25 @@ public class MecanumDrive extends OpMode {
 //		}
 
         if(gamepad2.a){
-            arm.setPosition(armOpen);
             armMotor.setTargetPosition((int) (ground-armOffset));
         }
 
         if(gamepad2.b){
-            arm.setPosition(armClose);
             armMotor.setTargetPosition((int) (low-armOffset));
         }
 
         if(gamepad2.x){
-            arm.setPosition(armClose);
             armMotor.setTargetPosition((int) (medium-armOffset));
         }
 
         if(gamepad2.y){
-            arm.setPosition(armClose);
             armMotor.setTargetPosition((int) (high-armOffset));
         }
 
         if(gamepad2.dpad_up){
-            armMotor.setPower(armUpSpeed);
+            target += 10;
         } else if(gamepad2.dpad_down){
-            armMotor.setPower(armDownSpeed);
-        } else {
-            armMotor.setPower(0);
+            target -= 10;
         }
 
         //Linear Slide PID Start
@@ -168,8 +165,18 @@ public class MecanumDrive extends OpMode {
 
         armMotor.setPower(power);
 
+        if (gamepad2.left_bumper) {
+            clawPos = armClose;
+        }
+
+        if (gamepad2.right_bumper) {
+            clawPos = armOpen;
+        }
+
+
         telemetry.addData("pos:", armPos);
         telemetry.addData("target", target);
+        telemetry.addData("clawPos", claw.getPosition());
         //Linear Slide PID End
 
         /*
