@@ -31,6 +31,9 @@ public class MecanumDrive extends OpMode {
     //End Servo Config
 
     //Begin Linear Slide Pre-Programmed Heights
+    public static int lowerLimit = 210;
+    public static int higherLimit = 0;
+
     public static int ground = 210;
     public static int low = 50;
     public static int medium = 100;
@@ -153,9 +156,9 @@ public class MecanumDrive extends OpMode {
             //clawPos = armOpen;
         }
 
-        if(gamepad2.dpad_up){
+        if(gamepad2.dpad_up && target <= higherLimit){
             target += 10;
-        } else if(gamepad2.dpad_down && target >= 210){
+        } else if(gamepad2.dpad_down && target >= lowerLimit){
             target -= 10;
         }
 
