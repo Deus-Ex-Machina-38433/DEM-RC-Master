@@ -31,7 +31,7 @@ public class MecanumDrive extends OpMode {
     //End Servo Config
 
     //Begin Linear Slide Pre-Programmed Heights
-    public static int ground = 0;
+    public static int ground = 210;
     public static int low = 50;
     public static int medium = 100;
     public static int high = 150;
@@ -40,7 +40,7 @@ public class MecanumDrive extends OpMode {
     private PIDController controller;
     public static double p = 0.01, i = 0, d =0.0001;
     public static double f = 0.05;
-    public static int target = 0;
+    public static int target = -1000;
     private final double ticks_in_degreeAMO = 1993.6 / 180.0;
     public static double armUpSpeed = 0.2;
     public static double armDownSpeed = -0.2;
@@ -67,7 +67,6 @@ public class MecanumDrive extends OpMode {
         armMotor = (DcMotorEx) hardwareMap.dcMotor.get("armMotor");
         LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        armMotor.setDirection(DcMotorEx.Direction.REVERSE);
         armOffset = armMotor.getCurrentPosition();
 
         // Misc Motors
@@ -134,24 +133,29 @@ public class MecanumDrive extends OpMode {
 //		}
 
         if(gamepad2.a){
-            armMotor.setTargetPosition((int) (ground-armOffset));
+            target = ground;
+            clawPos = armOpen;
         }
 
         if(gamepad2.b){
-            armMotor.setTargetPosition((int) (low-armOffset));
+            target = low;
+            //clawPos = armOpen;
+
         }
 
         if(gamepad2.x){
-            armMotor.setTargetPosition((int) (medium-armOffset));
+            target = medium;
+            //clawPos = armOpen;
         }
 
         if(gamepad2.y){
-            armMotor.setTargetPosition((int) (high-armOffset));
+            target = high;
+            //clawPos = armOpen;
         }
 
         if(gamepad2.dpad_up){
             target += 10;
-        } else if(gamepad2.dpad_down){
+        } else if(gamepad2.dpad_down && target >= 210){
             target -= 10;
         }
 
