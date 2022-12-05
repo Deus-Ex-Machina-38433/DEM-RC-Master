@@ -18,83 +18,65 @@ import org.tensorflow.lite.Tensor;
 @TeleOp(name = "MecanumDrive")
 public class MecanumDrive extends OpMode {
 
-    /*
-    Relevant Stuff:
-    inner: -520
-    outer: 480
-     */
-
-    //Begin Servo Config
-    public static double armOpen = 1.0;
-    public static double armClose = 0.0;
-    public static double clawPos = armClose;
-    //End Servo Config
-
-    //Begin Linear Slide Pre-Programmed Heights
-    public static int lowerLimit = 210;
-    public static int upperLimit = -1000;
-
-    public static int ground = 210;
-    public static int pickup = 215;
-    public static int low = 50;
-    public static int medium = 100;
-    public static int high = 150;
+    //----------------------------------------------------------------------------------------------
+    // Linear Slide Pre-Programmed Heights
+    public static int lowerLimit = -20;
+    public static int upperLimit = -6000;
+    private static int pickup = -20;
+    public static int ground = -20;
+    public static int low = -2850;
+    public static int medium = -4525;
+    public static int high = -5600;
+    private double clawClose = 1.0;
+    private double clawOpen = 0.0;
+    //----------------------------------------------------------------------------------------------
 
 
-    //Begin Linear Slide PID
-    private PIDController controller;
-    public static double p = 0.01, i = 0, d =0.0001;
-    public static double f = 0.05;
-    public static int target = pickup;
-    private final double ticks_in_degreeAMO = 1993.6 / 180.0;
-    public static double armUpSpeed = 0.2;
-    public static double armDownSpeed = -0.2;
-    //End Linear Slide PID
-    private double armOffset = 0;
-    // Drivetrain Motors
-    DcMotorEx LeftFrontMotor; // Left Front Motor 0
-    DcMotorEx RightFrontMotor; // Right Front Motor 1
-    DcMotorEx LeftBackMotor; // Left Back Motor 2
-    DcMotorEx RightBackMotor; // Right Back Motor 3
-    // End^^
-
-    DcMotorEx armMotor;
-    Servo claw;
+    //Begin Linear Slide config
+    public static double armUpSpeed = 0.85;
+    public static double armDownSpeed = -0.45;
+    int position = 0;
+    
+    //----------------------------------------------------------------------------------------------
+    DcMotorEx LeftFrontMotor; // 0 - base
+    DcMotorEx RightFrontMotor; // 1 - base
+    DcMotorEx LeftBackMotor; // 2 - base
+    DcMotorEx RightBackMotor; // 3 - basem
+    DcMotorEx armMotor; // 0 - arm
+    Servo claw; // 0 - arm
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public void init(){
 
-        // Wheel Motors
+        //------------------------------------------------------------------------------------------
         LeftFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftFrontMotor");
         RightFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightFrontMotor");
         LeftBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftBackMotor");
         RightBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightBackMotor");
         armMotor = (DcMotorEx) hardwareMap.dcMotor.get("armMotor");
+        
         LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        armOffset = armMotor.getCurrentPosition();
-
-        // Misc Motors
-
-        controller = new PIDController(p, i, d);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         claw = hardwareMap.servo.get("claw");
+        //------------------------------------------------------------------------------------------
+        int position = armMotor.getCurrentPosition();
+//        slideController = new PIDController(p, i, d);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
     @Override
     public void loop(){
 
-        claw.setPosition(clawPos);
-
+        //------------------------------------------------------------------------------------------
         double speedMultiply;
-        if(gamepad1.right_trigger > .50){
+        if(gamepad1.right_trigger > .75){
             speedMultiply = 1;
-        } else if(gamepad1.left_trigger >.50){
-            speedMultiply = .25;
+        } else if(gamepad1.left_trigger >.75){
+            speedMultiply = .35;
         } else{
-            speedMultiply = .55;
+            speedMultiply = .69;
         }
-
 
         double lateral = -gamepad1.left_stick_x;
         double longitudinal = gamepad1.left_stick_y;
@@ -109,98 +91,84 @@ public class MecanumDrive extends OpMode {
         RightFrontMotor.setPower(( -wheelPower * sinAngleRadians * factor - turn) * speedMultiply);
         LeftBackMotor.setPower(( -wheelPower * sinAngleRadians * factor + turn) * speedMultiply);
         RightBackMotor.setPower(( -wheelPower * cosAngleRadians * factor - turn) * speedMultiply);
-
-        // LAST DITCH ROBOT RESET CODE
-        // DO NOT ACTIVE UNLESS ABSOLUTELY NEEDED
-        if(gamepad1.x){
-            if(gamepad1.dpad_up){
-            LeftFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            RightFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            LeftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            RightBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            // Make better Reset thing, thatll mess with stuff
-            }
-        }
-
-        //Begin Claw Servo Code :(
-
-//		armRight.setPosition(leftInital);
-//		armLeft.setPosition(rightInital);
-
-//		To Close
-//		if(gamepad2.dpad_up){
-//            arm.setPosition(armClose);
-//		}
-//
-//		// Release
-//		if (gamepad2.dpad_down){
-//            arm.setPosition(armOpen);
-//		}
-
+        //------------------------------------------------------------------------------------------
+        //Ground
+        /*
         if(gamepad2.a){
-            target = pickup;
+            if(position < -20){
+                armMotor.setPower(-armDownSpeed);
+            } else if (position >-20){
+                armMotor.setPower(armDownSpeed);
+            } else {
+                armMotor.setPower(0);
+            }
+            // armMotor.setPower(0);
+            // armMotor.setTargetPosition(-20);
+            // armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // claw.setPosition(clawOpen);
         }
-
+        //Low
         if(gamepad2.b){
-            target = low;
-            //clawPos = armOpen;
-
+            // armMotor.setTargetPosition(-2850);
+            // armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // armMotor.setPower(0);
         }
-
+        //Medium
         if(gamepad2.x){
-            target = medium;
-            //clawPos = armOpen;
+            // armMotor.setPower(0);
+            // armMotor.setTargetPosition(-4525);
+            // armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // armMotor.setPower(-0.15);
         }
-
+        //High
         if(gamepad2.y){
-            target = high;
-            //clawPos = armOpen;
+            // armMotor.setTargetPosition(-5600); 
+            // armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // armMotor.setPower(-0.2);
+        }
+        */
+        //------------------------------------------------------------------------------------------
+
+        int position = armMotor.getCurrentPosition();
+        if(gamepad2.right_trigger>.9 && position >= upperLimit) {
+            armMotor.setPower(-1*armUpSpeed);
+        } else if(gamepad2.left_trigger>.9 && position <= lowerLimit){
+            armMotor.setPower(-1*armDownSpeed);
+        } else {
+            armMotor.setPower(0);
         }
 
-        if(gamepad2.right_trigger > .9 && target <= lowerLimit) {
-            target += 10;
-        } else if(gamepad2.left_trigger > .9 && target >= upperLimit){
-            target -= 10;
-        }
+//        if(position == 5000){
+//            claw.setPosition(1.0);
+//        }
 
-        //Linear Slide PID Start
-        controller.setPID(p, i, d);
-        int armPos = armMotor.getCurrentPosition();
-        double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(Math.toRadians(target/ticks_in_degreeAMO)) * f;
+        //------------------------------------------------------------------------------------------
+//        int armPos = armMotor.getCurrentPosition();
+//
+//        slideController.setPID(p, i, d);
+//        double pid = slideController.calculate(armPos, target);
+//        double ff = Math.cos(Math.toRadians(target/ticks_in_degreeAMO)) * f;
+//
+//        double power = (pid + ff);
+//
+//        armMotor.setPower(power);
 
-        double power = (pid + ff);
-
-        armMotor.setPower(power);
+        //------------------------------------------------------------------------------------------
 
         if (gamepad2.left_bumper) {
-            clawPos = armClose;
+            claw.setPosition(clawOpen);
         }
 
         if (gamepad2.right_bumper) {
-            clawPos = armOpen;
+            claw.setPosition(clawClose);
         }
+        //------------------------------------------------------------------------------------------
 
-
-        telemetry.addData("pos:", armPos);
-        telemetry.addData("target", target);
-        telemetry.addData("clawPos", claw.getPosition());
-        //Linear Slide PID End
-
-        /*
-        TODO:
-        Chain Both arm motors together
-        Camera reading stuff
-        Some form of working autonomous (Time :(, Could do distance if thatll work,
-        or like a run to position thing, doesn't need to be crazy)
-        All PID tuning that can do
-        Create Reset thing
-        Servo Coding for claw (TEST)
-        Scratch Code for Nicks design
-        Simple this file
-        Convince for odometery pods cause nobody listen lmfao
-        Add height locks for scoring, Dk if will have enough driver practice before meet, to not use
-        */
+        telemetry.addData("Arm Position: ", position);
+        telemetry.addData("Lower Limit: ", lowerLimit);
+        telemetry.addData("Higher Limit: ", upperLimit);
+//        telemetry.addData("pos:", armPos);
+        //telemetry.addData("target", target);
     }
 }
 

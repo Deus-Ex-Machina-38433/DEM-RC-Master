@@ -59,7 +59,7 @@ public class AutoBlue extends LinearOpMode {
     private final double ticks_in_degreeAMO = 1993.6 / 360.0; //Insert Value
     private final double ticks_per_RevAMO = 1993.6; //Insert Value
 
-    private DcMotorEx AMOuter;
+//    private DcMotorEx AMOuter;
     //End Above
 
     //Begin Arm Inner Motor PID Declarations
@@ -73,7 +73,7 @@ public class AutoBlue extends LinearOpMode {
     private final double ticks_in_degreeAMI = 751.8 / 360.0; //Insert Value
     private final double ticks_per_RevAMI = 751.8; //Insert Value
 
-    private DcMotorEx AMInner;
+//    private DcMotorEx AMInner;
     //End As Above
 
     // Drivetrain Motors
@@ -83,23 +83,23 @@ public class AutoBlue extends LinearOpMode {
     DcMotorEx LeftBackMotor; // Left Back Motor 2
     // End^^
 
-    Servo armRight, armLeft;
+//    Servo armRight, armLeft;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         controllerAMI = new PIDController(pAMI, iAMI, dAMI);
-        AMInner = hardwareMap.get(DcMotorEx.class, "AMInner");
+//        AMInner = hardwareMap.get(DcMotorEx.class, "AMInner");
 
         //Begin Arm Outer Motor PID Inits
         controllerAMO = new PIDController(pAMO, iAMO, dAMO);
-        AMOuter = hardwareMap.get(DcMotorEx.class, "AMOuter");
+//        AMOuter = hardwareMap.get(DcMotorEx.class, "AMOuter");
         // End as Above
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        armRight = hardwareMap.servo.get("armRight");
-        armLeft = hardwareMap.servo.get("armLeft");
+//        armRight = hardwareMap.servo.get("armRight");
+//        armLeft = hardwareMap.servo.get("armLeft");
 
         LeftFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftFrontMotor");
         RightFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightFrontMotor");
@@ -111,18 +111,18 @@ public class AutoBlue extends LinearOpMode {
         // Misc Motors
 
         //Begin Inner Motor PID Inits
-        controllerAMI = new PIDController(pAMI, iAMI, dAMI);
-        AMInner = hardwareMap.get(DcMotorEx.class, "AMInner");
-
-        //Begin Arm Outer Motor PID Inits
-        controllerAMO = new PIDController(pAMO, iAMO, dAMO);
-        AMOuter = hardwareMap.get(DcMotorEx.class, "AMOuter");
+//        controllerAMI = new PIDController(pAMI, iAMI, dAMI);
+//        AMInner = hardwareMap.get(DcMotorEx.class, "AMInner");
+//
+//        //Begin Arm Outer Motor PID Inits
+//        controllerAMO = new PIDController(pAMO, iAMO, dAMO);
+//        AMOuter = hardwareMap.get(DcMotorEx.class, "AMOuter");
         // End as Above
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        armRight = hardwareMap.servo.get("armRight");
-        armLeft = hardwareMap.servo.get("armLeft");
+//        armRight = hardwareMap.servo.get("armRight");
+//        armLeft = hardwareMap.servo.get("armLeft");
 
         waitForStart();
         

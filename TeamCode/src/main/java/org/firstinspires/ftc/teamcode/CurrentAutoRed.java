@@ -21,20 +21,21 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-@TeleOp
-public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
+@Autonomous
+public class CurrentAutoRed extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -44,14 +45,14 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     // Lens intrinsics
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
-    // You will need to do your own calibration for other configurations!
+    //TODO: You will need to do your own calibration for other configurations!
     double fx = 578.272;
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
 
     // UNITS ARE METERS
-    double tagsize = 0.166;
+    double tagsize = 0.508;
 
     int left = 1;
     int middle = 2;
@@ -59,11 +60,29 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
     AprilTagDetection tagOfInterest = null;
 
+    DcMotorEx LeftFrontMotor; // 0 - base
+    DcMotorEx RightFrontMotor; // 1 - base
+    DcMotorEx LeftBackMotor; // 2 - base
+    DcMotorEx RightBackMotor; // 3 - basem
+    DcMotorEx armMotor; // 0 - arm
+    Servo claw; // 0 - arm
+
     @Override
     public void runOpMode()
     {
+
+        LeftFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftFrontMotor");
+        RightFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightFrontMotor");
+        LeftBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftBackMotor");
+        RightBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightBackMotor");
+        armMotor = (DcMotorEx) hardwareMap.dcMotor.get("armMotor");
+
+        LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        claw = hardwareMap.servo.get("claw");
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
@@ -166,14 +185,118 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         }
 
         /* Actually do something useful */
+
+        RightBackMotor.setPower(.1);
+        RightFrontMotor.setPower(.1);
+        LeftFrontMotor.setPower(.1);
+        LeftBackMotor.setPower(.1);
+        armMotor.setPower(.1);
+        sleep(50);
+        RightBackMotor.setPower(0);
+        RightFrontMotor.setPower(0);
+        LeftFrontMotor.setPower(.0);
+        LeftBackMotor.setPower(0);
+        armMotor.setPower(0);
+
+        // close claw
+        claw.setPosition(1.0);
+        sleep(200);
+
+        //Strafe right
+        RightBackMotor.setPower(-.5);
+        RightFrontMotor.setPower(.5);
+        LeftFrontMotor.setPower(-.5);
+        LeftBackMotor.setPower(.5);
+        sleep(1650);
+        RightBackMotor.setPower(0);
+        RightFrontMotor.setPower(0);
+        LeftFrontMotor.setPower(0);
+        LeftBackMotor.setPower(0);
+
+        sleep(1000);
+
+        // move forward
+        RightBackMotor.setPower(.5);
+        RightFrontMotor.setPower(.5);
+        LeftFrontMotor.setPower(.55);
+        LeftBackMotor.setPower(.55);
+        sleep(1850);
+        RightBackMotor.setPower(0);
+        RightFrontMotor.setPower(0);
+        LeftFrontMotor.setPower(0);
+        LeftBackMotor.setPower(0);
+
+        sleep(100);
+
+        // strafe left and score cone
+        RightBackMotor.setPower(.5);
+        RightFrontMotor.setPower(-.5);
+        LeftFrontMotor.setPower(.5);
+        LeftBackMotor.setPower(-.5);
+        armMotor.setPower(-0.85);
+        sleep(810);
+        RightBackMotor.setPower(0);
+        RightFrontMotor.setPower(0);
+        LeftFrontMotor.setPower(0);
+        LeftBackMotor.setPower(0);
+        sleep(1190);
+        RightBackMotor.setPower(0.1);
+        RightFrontMotor.setPower(0.1);
+        LeftFrontMotor.setPower(0.1);
+        LeftBackMotor.setPower(0.1);
+        sleep(1000);
+        RightBackMotor.setPower(0);
+        RightFrontMotor.setPower(0);
+        LeftFrontMotor.setPower(0);
+        LeftBackMotor.setPower(0);
+        claw.setPosition(0.0);
+        armMotor.setPower(0.45);
+        RightBackMotor.setPower(-0.2);
+        RightFrontMotor.setPower(-0.2);
+        LeftFrontMotor.setPower(-0.2);
+        LeftBackMotor.setPower(-0.2);
+        sleep(200);
+        RightBackMotor.setPower(0);
+        RightFrontMotor.setPower(0);
+        LeftFrontMotor.setPower(0);
+        LeftBackMotor.setPower(0);
+        sleep(2800);
+        armMotor.setPower(0);
+
+        //TODO: strafe to proper side
         if (tagOfInterest == null ||tagOfInterest.id == left) {
-            //TODO insert left code
+            RightBackMotor.setPower(-.5);
+            RightFrontMotor.setPower(.5);
+            LeftFrontMotor.setPower(-.5);
+            LeftBackMotor.setPower(.5);
+            sleep(2430);
+            RightBackMotor.setPower(0);
+            RightFrontMotor.setPower(0);
+            LeftFrontMotor.setPower(0);
+            LeftBackMotor.setPower(0);
         } else if (tagOfInterest == null ||tagOfInterest.id == right) {
-            //TODO insert right code
+            RightBackMotor.setPower(.5);
+            RightFrontMotor.setPower(-.5);
+            LeftFrontMotor.setPower(.5);
+            LeftBackMotor.setPower(-.5);
+            sleep(810);
+            RightBackMotor.setPower(0);
+            RightFrontMotor.setPower(0);
+            LeftFrontMotor.setPower(0);
+            LeftBackMotor.setPower(0);
+        } else {
+            RightBackMotor.setPower(-.5);
+            RightFrontMotor.setPower(.5);
+            LeftFrontMotor.setPower(-.5);
+            LeftBackMotor.setPower(.5);
+            sleep(810);
+            RightBackMotor.setPower(0);
+            RightFrontMotor.setPower(0);
+            LeftFrontMotor.setPower(0);
+            LeftBackMotor.setPower(0);
         }
 
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+        sleep(999999);
     }
 
     void tagToTelemetry(AprilTagDetection detection)
@@ -182,8 +305,5 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }
