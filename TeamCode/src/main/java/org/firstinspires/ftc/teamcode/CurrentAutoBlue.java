@@ -63,7 +63,7 @@ public class CurrentAutoBlue extends LinearOpMode
     DcMotorEx LeftFrontMotor; // 0 - base
     DcMotorEx RightFrontMotor; // 1 - base
     DcMotorEx LeftBackMotor; // 2 - base
-    DcMotorEx RightBackMotor; // 3 - basem
+    DcMotorEx RightBackMotor; // 3 - base
     DcMotorEx armMotor; // 0 - arm
     Servo claw; // 0 - arm
 
@@ -77,6 +77,9 @@ public class CurrentAutoBlue extends LinearOpMode
         RightBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightBackMotor");
         armMotor = (DcMotorEx) hardwareMap.dcMotor.get("armMotor");
 
+        armMotor.setTargetPosition(0);
+        armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
         claw = hardwareMap.servo.get("claw");
@@ -190,14 +193,12 @@ public class CurrentAutoBlue extends LinearOpMode
         RightFrontMotor.setPower(.1);
         LeftFrontMotor.setPower(.1);
         LeftBackMotor.setPower(.1);
-        armMotor.setPower(-.1);
         sleep(50);
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
         LeftFrontMotor.setPower(.0);
         LeftBackMotor.setPower(0);
-        armMotor.setPower(-.12);
 
         // close claw
         claw.setPosition(1.0);
@@ -235,6 +236,7 @@ public class CurrentAutoBlue extends LinearOpMode
         RightFrontMotor.setPower(.5);
         LeftFrontMotor.setPower(-.5);
         LeftBackMotor.setPower(.5);
+        armMotor.setTargetPosition(5600);
         armMotor.setPower(-0.85);
         sleep(730);
 
@@ -255,6 +257,7 @@ public class CurrentAutoBlue extends LinearOpMode
         LeftFrontMotor.setPower(0);
         LeftBackMotor.setPower(0);
         claw.setPosition(0.0);
+        armMotor.setTargetPosition(0);
         armMotor.setPower(0.45);
         RightBackMotor.setPower(-0.2);
         RightFrontMotor.setPower(-0.2);
