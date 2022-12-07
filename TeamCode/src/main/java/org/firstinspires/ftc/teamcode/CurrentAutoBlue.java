@@ -209,7 +209,7 @@ public class CurrentAutoBlue extends LinearOpMode
         RightFrontMotor.setPower(-.5);
         LeftFrontMotor.setPower(.5);
         LeftBackMotor.setPower(-.5);
-        sleep(1650);
+        sleep(1750);
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
@@ -221,8 +221,8 @@ public class CurrentAutoBlue extends LinearOpMode
         // move forward
         RightBackMotor.setPower(.5);
         RightFrontMotor.setPower(.5);
-        LeftFrontMotor.setPower(.525);
-        LeftBackMotor.setPower(.525);
+        LeftFrontMotor.setPower(.5);
+        LeftBackMotor.setPower(.5);
         sleep(1850);
 
         RightBackMotor.setPower(0);

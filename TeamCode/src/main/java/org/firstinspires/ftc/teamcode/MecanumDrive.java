@@ -20,21 +20,22 @@ public class MecanumDrive extends OpMode {
 
     //----------------------------------------------------------------------------------------------
     // Linear Slide Pre-Programmed Heights
-    public static int lowerLimit = -20;
+    public static int lowerLimit = 0;
     public static int upperLimit = -6000;
-    private static int pickup = -20;
-    public static int ground = -20;
-    public static int low = -2850;
-    public static int medium = -4525;
-    public static int high = -5600;
+//    private static int pickup = -20;
+    public static int ground = 20;
+    public static int low = 2550;
+    public static int medium = 4120;
+    public static int high = 5600;
     private double clawClose = 1.0;
     private double clawOpen = 0.0;
     //----------------------------------------------------------------------------------------------
 
 
     //Begin Linear Slide config
-    public static double armUpSpeed = 0.85;
-    public static double armDownSpeed = -0.45;
+    public static int target = 0;
+    public static int armUpSpeed = 15;
+    public static int armDownSpeed = -15;
     int position = 0;
     
     //----------------------------------------------------------------------------------------------
@@ -55,7 +56,10 @@ public class MecanumDrive extends OpMode {
         LeftBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftBackMotor");
         RightBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightBackMotor");
         armMotor = (DcMotorEx) hardwareMap.dcMotor.get("armMotor");
-        
+
+        armMotor.setTargetPosition(0);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
         claw = hardwareMap.servo.get("claw");
@@ -92,68 +96,48 @@ public class MecanumDrive extends OpMode {
         LeftBackMotor.setPower(( -wheelPower * sinAngleRadians * factor + turn) * speedMultiply);
         RightBackMotor.setPower(( -wheelPower * cosAngleRadians * factor - turn) * speedMultiply);
         //------------------------------------------------------------------------------------------
-        //Ground
-        /*
-        if(gamepad2.a){
-            if(position < -20){
-                armMotor.setPower(-armDownSpeed);
-            } else if (position >-20){
-                armMotor.setPower(armDownSpeed);
-            } else {
-                armMotor.setPower(0);
-            }
-            // armMotor.setPower(0);
-            // armMotor.setTargetPosition(-20);
-            // armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            // claw.setPosition(clawOpen);
-        }
-        //Low
-        if(gamepad2.b){
-            // armMotor.setTargetPosition(-2850);
-            // armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            // armMotor.setPower(0);
-        }
-        //Medium
-        if(gamepad2.x){
-            // armMotor.setPower(0);
-            // armMotor.setTargetPosition(-4525);
-            // armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            // armMotor.setPower(-0.15);
-        }
-        //High
-        if(gamepad2.y){
-            // armMotor.setTargetPosition(-5600); 
-            // armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            // armMotor.setPower(-0.2);
-        }
-        */
-        //------------------------------------------------------------------------------------------
-
         int position = armMotor.getCurrentPosition();
-        if(gamepad2.right_trigger>.9 && position >= upperLimit) {
-            armMotor.setPower(-1*armUpSpeed);
-        } else if(gamepad2.left_trigger>.9 && position <= lowerLimit){
-            armMotor.setPower(-1*armDownSpeed);
+        armMotor.setTargetPosition(-target);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        if(-position > target){
+            armMotor.setPower(-armDownSpeed);
+        } else if (-position < target){
+            armMotor.setPower(-armUpSpeed);
         } else {
             armMotor.setPower(0);
         }
+        //------------------------------------------------------------------------------------------
 
-//        if(position == 5000){
-//            claw.setPosition(1.0);
-//        }
+        //Ground
+        // TODO: Rishu daddy you forgot to add the time stuff nerd for the if statement
+        // TODO: Man how hard is it nerd
+        if(gamepad2.a){
+           target = ground;
+           claw.setPosition(clawOpen);
+        }
+        //Low
+        if(gamepad2.b){
+            target = low;
+        }
+        //Medium
+        if(gamepad2.x){
+            target = medium;
+        }
+        //High
+        if(gamepad2.y){
+            target = high;
+        }
 
         //------------------------------------------------------------------------------------------
-//        int armPos = armMotor.getCurrentPosition();
-//
-//        slideController.setPID(p, i, d);
-//        double pid = slideController.calculate(armPos, target);
-//        double ff = Math.cos(Math.toRadians(target/ticks_in_degreeAMO)) * f;
-//
-//        double power = (pid + ff);
-//
-//        armMotor.setPower(power);
 
-        //------------------------------------------------------------------------------------------
+        if(gamepad2.right_trigger>.9 && -target >= upperLimit) {
+//            armMotor.setPower(-1*armUpSpeed);
+            target = target + armUpSpeed;
+        } else if(gamepad2.left_trigger>.9 && -target <= lowerLimit){
+//            armMotor.setPower(-1*armDownSpeed);
+            target = target + armDownSpeed;
+        }
 
         if (gamepad2.left_bumper) {
             claw.setPosition(clawOpen);
@@ -164,11 +148,16 @@ public class MecanumDrive extends OpMode {
         }
         //------------------------------------------------------------------------------------------
 
-        telemetry.addData("Arm Position: ", position);
-        telemetry.addData("Lower Limit: ", lowerLimit);
-        telemetry.addData("Higher Limit: ", upperLimit);
-//        telemetry.addData("pos:", armPos);
-        //telemetry.addData("target", target);
+        telemetry.addData("Current Position: ", -position);
+        telemetry.addData("Target Position: ", target);
+        telemetry.addData("Lower Limit: ", -lowerLimit);
+        telemetry.addData("Higher Limit: ", -upperLimit);
+        //Added for Wheel Testing -- Yatharth -- 12/6/2022
+        telemetry.addData("LF Motor Power", LeftFrontMotor.getPower());
+        telemetry.addData("LF Motor Power", LeftFrontMotor.getVelocity());
+        telemetry.addData("RF Motor Power", RightFrontMotor.getPower());
+        telemetry.addData("RF Motor Power", RightFrontMotor.getVelocity());
+        telemetry.addData("Difference", LeftFrontMotor.getVelocity()-RightFrontMotor.getVelocity());
     }
 }
 
