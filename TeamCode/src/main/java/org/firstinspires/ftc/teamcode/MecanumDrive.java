@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static android.os.SystemClock.sleep;
+
 import android.util.Range;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -59,7 +61,7 @@ public class MecanumDrive extends OpMode {
 
         armMotor.setTargetPosition(0);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
         claw = hardwareMap.servo.get("claw");
@@ -118,14 +120,21 @@ public class MecanumDrive extends OpMode {
         }
         //Low
         if(gamepad2.b){
+//            claw.setPosition(clawClose);
+//            sleep(100);
             target = low;
         }
         //Medium
         if(gamepad2.x){
+//            claw.setPosition(clawClose);
+//            sleep(100);
             target = medium;
         }
         //High
         if(gamepad2.y){
+//            claw.setPosition(clawClose);
+//            sleep(100);
+
             target = high;
         }
 

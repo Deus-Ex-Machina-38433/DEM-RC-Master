@@ -208,7 +208,7 @@ public class CurrentAutoBlue extends LinearOpMode
         RightFrontMotor.setPower(-.5);
         LeftFrontMotor.setPower(.5);
         LeftBackMotor.setPower(-.5);
-        sleep(1650);
+        sleep(1550);
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
@@ -220,8 +220,8 @@ public class CurrentAutoBlue extends LinearOpMode
         // move forward
         RightBackMotor.setPower(.5);
         RightFrontMotor.setPower(.5);
-        LeftFrontMotor.setPower(.525);
-        LeftBackMotor.setPower(.525);
+        LeftFrontMotor.setPower(.5);
+        LeftBackMotor.setPower(.5);
         sleep(1850);
 
         RightBackMotor.setPower(0);
@@ -235,19 +235,19 @@ public class CurrentAutoBlue extends LinearOpMode
         RightFrontMotor.setPower(.5);
         LeftFrontMotor.setPower(-.5);
         LeftBackMotor.setPower(.5);
-        armMotor.setPower(-0.85);
-        sleep(730);
+        armMotor.setPower(-0.84);
+        sleep(845);
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
         LeftFrontMotor.setPower(0);
         LeftBackMotor.setPower(0);
-        sleep(1170);
+        sleep(1150);
 
-        RightBackMotor.setPower(0.1);
-        RightFrontMotor.setPower(0.1);
-        LeftFrontMotor.setPower(0.1);
-        LeftBackMotor.setPower(0.1);
+        RightBackMotor.setPower(0.15);
+        RightFrontMotor.setPower(0.15);
+        LeftFrontMotor.setPower(0.15);
+        LeftBackMotor.setPower(0.15);
         sleep(1100);
 
         RightBackMotor.setPower(0);
@@ -276,7 +276,7 @@ public class CurrentAutoBlue extends LinearOpMode
             RightFrontMotor.setPower(.5);
             LeftFrontMotor.setPower(-.5);
             LeftBackMotor.setPower(.5);
-            sleep(2000);
+            sleep(1950);
             RightBackMotor.setPower(0);
             RightFrontMotor.setPower(0);
             LeftFrontMotor.setPower(0);
