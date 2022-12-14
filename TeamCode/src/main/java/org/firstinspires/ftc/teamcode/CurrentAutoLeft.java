@@ -35,8 +35,10 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class CurrentAutoBlue extends LinearOpMode
+public class CurrentAutoLeft extends LinearOpMode
 {
+    double PowerFactor = 12.06/13.31;
+
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -186,28 +188,28 @@ public class CurrentAutoBlue extends LinearOpMode
 
         /* Actually do something useful */
 
-        RightBackMotor.setPower(.1);
-        RightFrontMotor.setPower(.1);
-        LeftFrontMotor.setPower(.1);
-        LeftBackMotor.setPower(.1);
-        armMotor.setPower(-.1);
+        RightBackMotor.setPower(.1 * PowerFactor);
+        RightFrontMotor.setPower(.1 *PowerFactor);
+        LeftFrontMotor.setPower(.1*PowerFactor);
+        LeftBackMotor.setPower(.1*PowerFactor);
+        armMotor.setPower(-.1*PowerFactor);
         sleep(50);
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
         LeftFrontMotor.setPower(.0);
         LeftBackMotor.setPower(0);
-        armMotor.setPower(-.12);
+        armMotor.setPower(-.12*PowerFactor);
 
         // close claw
         claw.setPosition(1.0);
         sleep(200);
 
         //Strafe right
-        RightBackMotor.setPower(.5);
-        RightFrontMotor.setPower(-.5);
-        LeftFrontMotor.setPower(.5);
-        LeftBackMotor.setPower(-.5);
+        RightBackMotor.setPower(.5*PowerFactor);
+        RightFrontMotor.setPower(-.5*PowerFactor);
+        LeftFrontMotor.setPower(.5*PowerFactor);
+        LeftBackMotor.setPower(-.5*PowerFactor);
         sleep(1550);
 
         RightBackMotor.setPower(0);
@@ -218,11 +220,11 @@ public class CurrentAutoBlue extends LinearOpMode
         sleep(1000);
 
         // move forward
-        RightBackMotor.setPower(.5);
-        RightFrontMotor.setPower(.5);
-        LeftFrontMotor.setPower(.5);
-        LeftBackMotor.setPower(.5);
-        sleep(1850);
+        RightBackMotor.setPower(.5*PowerFactor);
+        RightFrontMotor.setPower(.5*PowerFactor);
+        LeftFrontMotor.setPower(.5*PowerFactor);
+        LeftBackMotor.setPower(.5*PowerFactor);
+        sleep(1900);
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
@@ -231,12 +233,12 @@ public class CurrentAutoBlue extends LinearOpMode
         sleep(100);
 
         // strafe left and score cone
-        RightBackMotor.setPower(-.5);
-        RightFrontMotor.setPower(.5);
-        LeftFrontMotor.setPower(-.5);
-        LeftBackMotor.setPower(.5);
-        armMotor.setPower(-0.84);
-        sleep(845);
+        RightBackMotor.setPower(-.5*PowerFactor);
+        RightFrontMotor.setPower(.5*PowerFactor);
+        LeftFrontMotor.setPower(-.5*PowerFactor);
+        LeftBackMotor.setPower(.5*PowerFactor);
+        armMotor.setPower(-0.93*PowerFactor);
+        sleep(675);
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
@@ -244,22 +246,22 @@ public class CurrentAutoBlue extends LinearOpMode
         LeftBackMotor.setPower(0);
         sleep(1150);
 
-        RightBackMotor.setPower(0.15);
-        RightFrontMotor.setPower(0.15);
-        LeftFrontMotor.setPower(0.15);
-        LeftBackMotor.setPower(0.15);
-        sleep(1100);
+        RightBackMotor.setPower(0.15*PowerFactor);
+        RightFrontMotor.setPower(0.15*PowerFactor);
+        LeftFrontMotor.setPower(0.15*PowerFactor);
+        LeftBackMotor.setPower(0.15*PowerFactor);
+        sleep(1050);
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
         LeftFrontMotor.setPower(0);
         LeftBackMotor.setPower(0);
         claw.setPosition(0.0);
-        armMotor.setPower(0.45);
-        RightBackMotor.setPower(-0.2);
-        RightFrontMotor.setPower(-0.2);
-        LeftFrontMotor.setPower(-0.2);
-        LeftBackMotor.setPower(-0.2);
+        armMotor.setPower(0.45*PowerFactor);
+        RightBackMotor.setPower(-0.2*PowerFactor);
+        RightFrontMotor.setPower(-0.2*PowerFactor);
+        LeftFrontMotor.setPower(-0.2*PowerFactor);
+        LeftBackMotor.setPower(-0.2*PowerFactor);
         sleep(400);
 
         RightBackMotor.setPower(0);
@@ -268,40 +270,42 @@ public class CurrentAutoBlue extends LinearOpMode
         LeftBackMotor.setPower(0);
         sleep(2600);
 
-        armMotor.setPower(0);
+        armMotor.setPower(-.1);
 
         //TODO: strafe to proper side
         if (tagOfInterest == null ||tagOfInterest.id == left) {
-            RightBackMotor.setPower(-.5);
-            RightFrontMotor.setPower(.5);
-            LeftFrontMotor.setPower(-.5);
-            LeftBackMotor.setPower(.5);
+            RightBackMotor.setPower(-.5*PowerFactor);
+            RightFrontMotor.setPower(.5*PowerFactor);
+            LeftFrontMotor.setPower(-.5*PowerFactor);
+            LeftBackMotor.setPower(.5*PowerFactor);
             sleep(1950);
             RightBackMotor.setPower(0);
             RightFrontMotor.setPower(0);
             LeftFrontMotor.setPower(0);
             LeftBackMotor.setPower(0);
         } else if (tagOfInterest == null ||tagOfInterest.id == right) {
-            RightBackMotor.setPower(.5);
-            RightFrontMotor.setPower(-.5);
-            LeftFrontMotor.setPower(.5);
-            LeftBackMotor.setPower(-.5);
+            RightBackMotor.setPower(.5*PowerFactor);
+            RightFrontMotor.setPower(-.5*PowerFactor);
+            LeftFrontMotor.setPower(.5*PowerFactor);
+            LeftBackMotor.setPower(-.5*PowerFactor);
             sleep(810);
             RightBackMotor.setPower(0);
             RightFrontMotor.setPower(0);
             LeftFrontMotor.setPower(0);
             LeftBackMotor.setPower(0);
         } else {
-            RightBackMotor.setPower(-.5);
-            RightFrontMotor.setPower(.5);
-            LeftFrontMotor.setPower(-.5);
-            LeftBackMotor.setPower(.5);
+            RightBackMotor.setPower(-.5*PowerFactor);
+            RightFrontMotor.setPower(.5*PowerFactor);
+            LeftFrontMotor.setPower(-.5*PowerFactor);
+            LeftBackMotor.setPower(.5*PowerFactor);
             sleep(810);
             RightBackMotor.setPower(0);
             RightFrontMotor.setPower(0);
             LeftFrontMotor.setPower(0);
             LeftBackMotor.setPower(0);
         }
+
+        armMotor.setTargetPosition(0);
 
         sleep(999999);
     }

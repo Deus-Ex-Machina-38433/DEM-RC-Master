@@ -35,7 +35,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class CurrentAutoRed extends LinearOpMode
+public class CurrentAutoRight extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -248,7 +248,7 @@ public class CurrentAutoRed extends LinearOpMode
         RightFrontMotor.setPower(0.135);
         LeftFrontMotor.setPower(0.135);
         LeftBackMotor.setPower(0.135);
-        sleep(1100);
+        sleep(750); // old value: 1100
 
         RightBackMotor.setPower(0);
         RightFrontMotor.setPower(0);
@@ -292,11 +292,11 @@ public class CurrentAutoRed extends LinearOpMode
             LeftFrontMotor.setPower(0);
             LeftBackMotor.setPower(0);
         } else {
-            RightBackMotor.setPower(-.5);
-            RightFrontMotor.setPower(.5);
-            LeftFrontMotor.setPower(-.5);
-            LeftBackMotor.setPower(.5);
-            sleep(810);
+            RightBackMotor.setPower(.5);
+            RightFrontMotor.setPower(-.5);
+            LeftFrontMotor.setPower(.5);
+            LeftBackMotor.setPower(-.5);
+            sleep(710); // old val: 810
             RightBackMotor.setPower(0);
             RightFrontMotor.setPower(0);
             LeftFrontMotor.setPower(0);
