@@ -21,6 +21,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -35,6 +36,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
+@Config
 @Autonomous
 public class FutureAutoLeft extends LinearOpMode
 {
@@ -66,12 +68,12 @@ public class FutureAutoLeft extends LinearOpMode
     // ^^ April Tag Stuff DO NOT TOUCH ^^
 
     // vv Run to Position config vv (how much ticks needed to cross exactly one mat)
-    int all = 1000;
-    boolean override = false; // Enable to use variables underneath
-    int LF = 1000;
-    int RF = 1000;
-    int LB = 1000;
-    int RB = 1000;
+    public static int all = 1000;
+    public static boolean override = false; // Enable to use variables underneath
+    public static int LF = 1000;
+    public static int RF = 1000;
+    public static int LB = 1000;
+    public static int RB = 1000;
     // ^^ Run to Position config ^^
 
     DcMotorEx LeftFrontMotor; // 0 - base
@@ -227,20 +229,36 @@ public class FutureAutoLeft extends LinearOpMode
 
         //TODO: Try this first
         if(override == true){
-            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (all * 0.1)));
-            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (all * 0.1)));
-            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (all * 0.1)));
-            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (all * 0.1)));
+            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (all * 1)));
+            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (all * 1)));
+            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (all * 1)));
+            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (all * 1)));
         } else {
-            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (LF * 0.1)));
-            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (RF * 0.1)));
-            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (LB * 0.1)));
-            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (RB * 0.1)));
+            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (LF * 1)));
+            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (RF * 1)));
+            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (LB * 1)));
+            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (RB * 1)));
         }
-        LeftFrontMotor.setPower((int) (PowerFactor * 0.1));
-        RightFrontMotor.setPower((int) (PowerFactor * 0.1));
-        LeftBackMotor.setPower((int) (PowerFactor * 0.1));
-        RightBackMotor.setPower((int) (PowerFactor * 0.1));
+        LeftFrontMotor.setPower((int) (PowerFactor * 0.5));
+        RightFrontMotor.setPower((int) (PowerFactor * 0.5));
+        LeftBackMotor.setPower((int) (PowerFactor * 0.5));
+        RightBackMotor.setPower((int) (PowerFactor * 0.5));
+        
+//        if(override == true){
+//            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (all * 0.1)));
+//            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (all * 0.1)));
+//            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (all * 0.1)));
+//            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (all * 0.1)));
+//        } else {
+//            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (LF * 0.1)));
+//            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (RF * 0.1)));
+//            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (LB * 0.1)));
+//            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (RB * 0.1)));
+//        }
+//        LeftFrontMotor.setPower((int) (PowerFactor * 0.6));
+//        RightFrontMotor.setPower((int) (PowerFactor * 0.1));
+//        LeftBackMotor.setPower((int) (PowerFactor * 0.1));
+//        RightBackMotor.setPower((int) (PowerFactor * 0.1));
 //        armMotor.setPower(-.1 * PowerFactor);
         sleep(50);
 
