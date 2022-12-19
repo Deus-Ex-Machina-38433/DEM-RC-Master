@@ -114,7 +114,7 @@ public class MecanumDrive extends OpMode {
 
         //Ground
         // TODO: Rishu daddy you forgot to add the time stuff nerd for the if statement
-        // TODO: Man how hard is it nerd
+        // TODO: Man sha' yo mou'
         //
         //if !claw.getPosition() == 1{
         //wait(250)

@@ -40,6 +40,7 @@ import java.util.ArrayList;
 @Autonomous
 public class FutureAutoLeft extends LinearOpMode
 {
+    double PowerMultiply = 1.0;
     // vv April Tag Stuff DO NOT TOUCH vv
     double PowerFactor = 12.06/13.31;
 
@@ -68,12 +69,10 @@ public class FutureAutoLeft extends LinearOpMode
     // ^^ April Tag Stuff DO NOT TOUCH ^^
 
     // vv Run to Position config vv (how much ticks needed to cross exactly one mat)
-    public static int all = 1000;
-    public static boolean override = false; // Enable to use variables underneath
-    public static int LF = 1000;
-    public static int RF = 1000;
-    public static int LB = 1000;
-    public static int RB = 1000;
+    public static int LF = 1060;
+    public static int RF = 1061;
+    public static int LB = 1060;
+    public static int RB = 1061;
     // ^^ Run to Position config ^^
 
     DcMotorEx LeftFrontMotor; // 0 - base
@@ -93,6 +92,11 @@ public class FutureAutoLeft extends LinearOpMode
         RightBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightBackMotor");
         armMotor = (DcMotorEx) hardwareMap.dcMotor.get("armMotor");
 
+        LeftFrontMotor.setTargetPosition(0);
+        RightFrontMotor.setTargetPosition(0);
+        LeftBackMotor.setTargetPosition(0);
+        RightBackMotor.setTargetPosition(0);
+        armMotor.setTargetPosition(0);
         LeftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         RightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         LeftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -210,39 +214,27 @@ public class FutureAutoLeft extends LinearOpMode
         /* Actually do something useful */
 
         /* User Snippet:
-        if(override == true){
-            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() $1$ (all * $POS$)));
-            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() $2$ (all * $POS$)));
-            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() $2$ (all * $POS$)));
-            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() $1$ (all * $POS$)));
-        } else {
-            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() $1$ (LF * $POS$)));
-            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() $2$ (RF * $POS$)));
-            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() $2$ (LB * $POS$)));
-            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() $1$ (RB * $POS$)));
-        }
-        LeftFrontMotor.setPower((int) (PowerFactor * $POWER1$));
-        RightFrontMotor.setPower((int) (PowerFactor * $POWER2$));
-        LeftBackMotor.setPower((int) (PowerFactor * $POWER2$));
-        RightBackMotor.setPower((int) (PowerFactor * $POWER1$));
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() $1$ (LF * $POS$)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() $2$ (RF * $POS$)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() $2$ (LB * $POS$)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() $1$ (RB * $POS$)));
+        LeftFrontMotor.setPower(PowerMultiply * $POWER1$);
+        RightFrontMotor.setPower(PowerMultiply * $POWER1$);
+        LeftBackMotor.setPower(PowerMultiply * $POWER1$);
+        RightBackMotor.setPower(PowerMultiply * $POWER1$);
          */
 
+
         //TODO: Try this first
-        if(override == true){
-            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (all * 1)));
-            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (all * 1)));
-            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (all * 1)));
-            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (all * 1)));
-        } else {
-            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (LF * 1)));
-            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (RF * 1)));
-            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (LB * 1)));
-            RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (RB * 1)));
-        }
-        LeftFrontMotor.setPower((int) (PowerFactor * 0.5));
-        RightFrontMotor.setPower((int) (PowerFactor * 0.5));
-        LeftBackMotor.setPower((int) (PowerFactor * 0.5));
-        RightBackMotor.setPower((int) (PowerFactor * 0.5));
+
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (LF * 1)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getCurrentPosition() + (RF * 1)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getCurrentPosition() + (LB * 1)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getCurrentPosition() + (RB * 1)));
+        LeftFrontMotor.setPower(PowerMultiply * 0.5);
+        RightFrontMotor.setPower(PowerMultiply * 0.5);
+        LeftBackMotor.setPower(PowerMultiply * 0.5);
+        RightBackMotor.setPower(PowerMultiply * 0.5);
         
 //        if(override == true){
 //            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getCurrentPosition() + (all * 0.1)));
@@ -384,4 +376,6 @@ public class FutureAutoLeft extends LinearOpMode
         telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
     }
+
+
 }
