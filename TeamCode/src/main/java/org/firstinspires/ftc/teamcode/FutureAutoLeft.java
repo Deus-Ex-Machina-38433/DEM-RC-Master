@@ -234,6 +234,11 @@ public class FutureAutoLeft extends LinearOpMode
         LeftBackMotor.setPower(PowerMultiply * 0.5);
         RightBackMotor.setPower(PowerMultiply * 0.5);
         while(opModeIsActive() && LeftFrontMotor.isBusy()){
+            telemetry.addData("LF: ", LeftFrontMotor.getCurrentPosition());
+            telemetry.addData("RF: ", RightFrontMotor.getCurrentPosition());
+            telemetry.addData("LB: ", LeftBackMotor.getCurrentPosition());
+            telemetry.addData("RB: ", RightBackMotor.getCurrentPosition());
+            telemetry.update();
             sleep(10);
         }
         claw.setPosition(1.0);
@@ -251,6 +256,11 @@ public class FutureAutoLeft extends LinearOpMode
         LeftBackMotor.setPower(PowerMultiply * 0.5);
         RightBackMotor.setPower(PowerMultiply * 0.5);
         while(opModeIsActive() && LeftFrontMotor.isBusy()){
+            telemetry.addData("LF: ", LeftFrontMotor.getCurrentPosition());
+            telemetry.addData("RF: ", RightFrontMotor.getCurrentPosition());
+            telemetry.addData("LB: ", LeftBackMotor.getCurrentPosition());
+            telemetry.addData("RB: ", RightBackMotor.getCurrentPosition());
+            telemetry.update();
             sleep(10);
         }
         sleep(200);
@@ -265,8 +275,18 @@ public class FutureAutoLeft extends LinearOpMode
         LeftBackMotor.setPower(PowerMultiply * 0.6);
         RightBackMotor.setPower(PowerMultiply * 0.6);
         while(opModeIsActive() && LeftFrontMotor.isBusy()){
+            telemetry.addData("LF: ", LeftFrontMotor.getCurrentPosition());
+            telemetry.addData("RF: ", RightFrontMotor.getCurrentPosition());
+            telemetry.addData("LB: ", LeftBackMotor.getCurrentPosition());
+            telemetry.addData("RB: ", RightBackMotor.getCurrentPosition());
+            telemetry.update();
             sleep(10);
         }
+        telemetry.addData("LF: ", LeftFrontMotor.getCurrentPosition());
+        telemetry.addData("RF: ", RightFrontMotor.getCurrentPosition());
+        telemetry.addData("LB: ", LeftBackMotor.getCurrentPosition());
+        telemetry.addData("RB: ", RightBackMotor.getCurrentPosition());
+        telemetry.update();
         sleep(200);
 
         //Strafe Left slightly to align with tall junction TODO: Strafe Values
@@ -279,8 +299,18 @@ public class FutureAutoLeft extends LinearOpMode
         LeftBackMotor.setPower(PowerMultiply * 0.5);
         RightBackMotor.setPower(PowerMultiply * 0.5);
         while(opModeIsActive() && LeftFrontMotor.isBusy()){
+            telemetry.addData("LF: ", LeftFrontMotor.getCurrentPosition());
+            telemetry.addData("RF: ", RightFrontMotor.getCurrentPosition());
+            telemetry.addData("LB: ", LeftBackMotor.getCurrentPosition());
+            telemetry.addData("RB: ", RightBackMotor.getCurrentPosition());
+            telemetry.update();
             sleep(10);
         }
+        telemetry.addData("LF: ", LeftFrontMotor.getCurrentPosition());
+        telemetry.addData("RF: ", RightFrontMotor.getCurrentPosition());
+        telemetry.addData("LB: ", LeftBackMotor.getCurrentPosition());
+        telemetry.addData("RB: ", RightBackMotor.getCurrentPosition());
+        telemetry.update();
         sleep(200);
 
         //Raise Arm and Score
@@ -295,6 +325,11 @@ public class FutureAutoLeft extends LinearOpMode
         LeftBackMotor.setPower(PowerMultiply * 0.2);
         RightBackMotor.setPower(PowerMultiply * 0.2);
         while(opModeIsActive() && armMotor.isBusy()){
+            telemetry.addData("LF: ", LeftFrontMotor.getCurrentPosition());
+            telemetry.addData("RF: ", RightFrontMotor.getCurrentPosition());
+            telemetry.addData("LB: ", LeftBackMotor.getCurrentPosition());
+            telemetry.addData("RB: ", RightBackMotor.getCurrentPosition());
+            telemetry.update();
             sleep(10);
         }
         claw.setPosition(0.0);
