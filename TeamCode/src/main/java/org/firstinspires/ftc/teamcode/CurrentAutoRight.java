@@ -34,7 +34,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous
+@Autonomous(name="AutoRight", group="Current")
 public class CurrentAutoRight extends LinearOpMode
 {
     OpenCvCamera camera;

@@ -34,7 +34,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous
+@Autonomous(name="AutoLeft", group="Current")
 public class CurrentAutoLeft extends LinearOpMode
 {
     double PowerFactor = 12.06/13.31;
