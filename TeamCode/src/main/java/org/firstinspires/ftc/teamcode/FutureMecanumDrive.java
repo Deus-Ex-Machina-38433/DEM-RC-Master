@@ -17,14 +17,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.tensorflow.lite.Tensor;
 
 @Config //This is needed to change variables marked as 'static' in Dashboard
-@TeleOp(name = "MecanumDrive", group = "Current")
-public class MecanumDrive extends OpMode {
+@TeleOp(name = "FutureMecanumDrive", group = "Future")
+public class FutureMecanumDrive extends OpMode {
 
     //----------------------------------------------------------------------------------------------
+
     // Linear Slide Pre-Programmed Heights
     public static int lowerLimit = 0;
     public static int upperLimit = -6000;
-//    private static int pickup = -20;
     public static int ground = 20;
     public static int low = 2550;
     public static int medium = 4120;
@@ -32,28 +32,52 @@ public class MecanumDrive extends OpMode {
     private double clawClose = 1.0;
     private double clawOpen = 0.0;
     private boolean isClawClosed = false;
-    //----------------------------------------------------------------------------------------------
+    public static int LF = 1060;
+    public static int RF = 1061;
+    public static int LB = 1060;
+    public static int RB = 1061;
 
+    //----------------------------------------------------------------------------------------------
 
     //Begin Linear Slide config
     public static int target = 0;
     public static int armUpSpeed = 15;
     public static int armDownSpeed = -15;
     int position = 0;
-    
+
     //----------------------------------------------------------------------------------------------
+
     DcMotorEx LeftFrontMotor; // 0 - base
     DcMotorEx RightFrontMotor; // 1 - base
     DcMotorEx LeftBackMotor; // 2 - base
-    DcMotorEx RightBackMotor; // 3 - basem
+    DcMotorEx RightBackMotor; // 3 - base
     DcMotorEx armMotor; // 0 - arm
     Servo claw; // 0 - arm
+
+    //----------------------------------------------------------------------------------------------
+
+    void _runToPosition(int LF, int RF, int LB, int RB) {
+        LeftFrontMotor.setTargetPosition(LeftFrontMotor.getCurrentPosition() + LF);
+        RightFrontMotor.setTargetPosition(RightFrontMotor.getCurrentPosition() + RF);
+        LeftBackMotor.setTargetPosition(LeftBackMotor.getCurrentPosition() + LB);
+        RightBackMotor.setTargetPosition(RightBackMotor.getCurrentPosition() + RB);
+        LeftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LeftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LeftFrontMotor.setPower(0.8);
+        RightFrontMotor.setPower(0.8);
+        LeftBackMotor.setPower(0.8);
+        RightBackMotor.setPower(0.8);
+    }
+
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public void init(){
+    public void init() {
 
         //------------------------------------------------------------------------------------------
+
         LeftFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftFrontMotor");
         RightFrontMotor = (DcMotorEx) hardwareMap.dcMotor.get("RightFrontMotor");
         LeftBackMotor = (DcMotorEx) hardwareMap.dcMotor.get("LeftBackMotor");
@@ -66,7 +90,9 @@ public class MecanumDrive extends OpMode {
         LeftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
         LeftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
         claw = hardwareMap.servo.get("claw");
+
         //------------------------------------------------------------------------------------------
+
         int position = armMotor.getCurrentPosition();
 //        slideController = new PIDController(p, i, d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -88,6 +114,24 @@ public class MecanumDrive extends OpMode {
         double lateral = -gamepad1.left_stick_x;
         double longitudinal = gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
+        if (lateral <= 0.05 && longitudinal <= 0.05) {
+            if (!LeftFrontMotor.isBusy()) {
+                if (gamepad1.dpad_up) {
+                    _runToPosition(LF, RF, LB, RB);
+                } else if (gamepad1.dpad_down) {
+                    _runToPosition(-LF, -RF, -LB, -RB);
+                } else if (gamepad1.dpad_left) {
+                    _runToPosition(-LF, RF, LB, -RB);
+                } else if (gamepad1.dpad_right) {
+                    _runToPosition(LF, -RF, -LB, RB);
+                }
+            }
+        } else {
+            LeftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LeftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
         double wheelPower = Math.hypot(lateral, longitudinal);
         double stickAngleRadians = Math.atan2(longitudinal, lateral);
         stickAngleRadians = stickAngleRadians - Math.PI / 4;
@@ -125,25 +169,25 @@ public class MecanumDrive extends OpMode {
         //}
 
 
-        if(gamepad2.a){
+        if (gamepad2.a) {
             isClawClosed = false;
-           target = ground;
-           claw.setPosition(clawOpen);
+            target = ground;
+            claw.setPosition(clawOpen);
         }
         //Low
-        if(gamepad2.b){
+        if (gamepad2.b) {
 //            claw.setPosition(clawClose);
 //            sleep(100);
             target = low;
         }
         //Medium
-        if(gamepad2.x){
+        if (gamepad2.x) {
 //            claw.setPosition(clawClose);
 //            sleep(100);
             target = medium;
         }
         //High
-        if(gamepad2.y){
+        if (gamepad2.y) {
 //            claw.setPosition(clawClose);
 //            sleep(100);
 
@@ -152,10 +196,10 @@ public class MecanumDrive extends OpMode {
 
         //------------------------------------------------------------------------------------------
 
-        if(gamepad2.right_trigger>.9 && -target >= upperLimit) {
+        if (gamepad2.right_trigger > .9 && -target >= upperLimit) {
 //            armMotor.setPower(-1*armUpSpeed);
             target = target + armUpSpeed;
-        } else if(gamepad2.left_trigger>.9 && -target <= lowerLimit){
+        } else if (gamepad2.left_trigger > .9 && -target <= lowerLimit) {
 //            armMotor.setPower(-1*armDownSpeed);
             target = target + armDownSpeed;
         }
@@ -180,6 +224,6 @@ public class MecanumDrive extends OpMode {
         telemetry.addData("LF Motor Power", LeftFrontMotor.getVelocity());
         telemetry.addData("RF Motor Power", RightFrontMotor.getPower());
         telemetry.addData("RF Motor Power", RightFrontMotor.getVelocity());
-        telemetry.addData("Difference", LeftFrontMotor.getVelocity()-RightFrontMotor.getVelocity());
+        telemetry.addData("Difference", LeftFrontMotor.getVelocity() - RightFrontMotor.getVelocity());
     }
 }
