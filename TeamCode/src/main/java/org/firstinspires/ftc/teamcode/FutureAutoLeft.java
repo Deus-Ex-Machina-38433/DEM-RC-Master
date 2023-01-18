@@ -274,10 +274,10 @@ public class FutureAutoLeft extends LinearOpMode
         sleep(500);
 
         //Move Forward toward tall junction TODO: Go Forward Values
-        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 1.95)));
-        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 1.95)));
-        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 1.95)));
-        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 1.95)));
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 2.15)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 2.17)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 2.15)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 2.17)));
         LeftFrontMotor.setPower(PowerMultiply * 0.6);
         RightFrontMotor.setPower(PowerMultiply * 0.6);
         LeftBackMotor.setPower(PowerMultiply * 0.6);
