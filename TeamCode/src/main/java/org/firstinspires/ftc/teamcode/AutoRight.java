@@ -26,7 +26,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -38,8 +37,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Config
-@Autonomous(name="FutureAutoLeft", group="Future")
-public class FutureAutoLeft extends LinearOpMode
+@Autonomous(name="AutoRight")
+public class AutoRight extends LinearOpMode
 {
     double PowerMultiply = 1.0;
     // vv April Tag Stuff DO NOT TOUCH vv
@@ -254,11 +253,11 @@ public class FutureAutoLeft extends LinearOpMode
         armMotor.setTargetPosition(200);
         armMotor.setPower(0.2);
 
-        //Strafe Right to avoid signal cone
-        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 1.47)));
-        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() - (RF * 1.47)));
-        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() - (LB * 1.47)));
-        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 1.47)));
+        //Strafe Left to avoid signal cone
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() - (LF * 1.03)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 1.03)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 1.03)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() - (RB * 1.03)));
         LeftFrontMotor.setPower(PowerMultiply * 0.5);
         RightFrontMotor.setPower(PowerMultiply * 0.5);
         LeftBackMotor.setPower(PowerMultiply * 0.5);
@@ -274,14 +273,14 @@ public class FutureAutoLeft extends LinearOpMode
         sleep(500);
 
         //Move Forward toward tall junction TODO: Go Forward Values
-        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 2.15)));
-        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 2.17)));
-        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 2.15)));
-        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 2.17)));
-        LeftFrontMotor.setPower(PowerMultiply * 0.6);
-        RightFrontMotor.setPower(PowerMultiply * 0.6);
-        LeftBackMotor.setPower(PowerMultiply * 0.6);
-        RightBackMotor.setPower(PowerMultiply * 0.6);
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 2.16)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 2.16)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 2.16)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 2.16)));
+        RightFrontMotor.setPower(PowerMultiply * 0.7);
+        LeftFrontMotor.setPower(PowerMultiply * 0.7);
+        LeftBackMotor.setPower(PowerMultiply * 0.7);
+        RightBackMotor.setPower(PowerMultiply * 0.7);
         while(opModeIsActive() && LeftFrontMotor.isBusy()){
             telemetry.addData("LF: ", LeftFrontMotor.getTargetPosition());
             telemetry.addData("RF: ", RightFrontMotor.getTargetPosition());
@@ -297,11 +296,11 @@ public class FutureAutoLeft extends LinearOpMode
         telemetry.update();
         sleep(500);
 
-        //Strafe Left slightly to align with tall junction TODO: Strafe Values
-        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() - (LF * .67)));
-        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * .67)));
-        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * .62)));
-        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() - (RB * .62)));
+        //Strafe Right slightly to align with tall junction TODO: Strafe Values
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * .57)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() - (RF * .57)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() - (LB * .57)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * .57)));
         LeftFrontMotor.setPower(PowerMultiply * 0.5);
         RightFrontMotor.setPower(PowerMultiply * 0.5);
         LeftBackMotor.setPower(PowerMultiply * 0.5);
@@ -325,10 +324,10 @@ public class FutureAutoLeft extends LinearOpMode
         armMotor.setTargetPosition(5700);
         armMotor.setPower(0.9);
         sleep(3000);
-        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * .17)));
-        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 0.17)));
-        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 0.17)));
-        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 0.17)));
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 0.1)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 0.1)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 0.1)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 0.1)));
         LeftFrontMotor.setPower(PowerMultiply * 0.2);
         RightFrontMotor.setPower(PowerMultiply * 0.2);
         LeftBackMotor.setPower(PowerMultiply * 0.2);
@@ -342,8 +341,104 @@ public class FutureAutoLeft extends LinearOpMode
             sleep(10);
         }
         claw.setPosition(0.0);
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * -0.15)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * -0.15)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * -0.15)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * -0.15)));
+        LeftFrontMotor.setPower(PowerMultiply * 0.2);
+        RightFrontMotor.setPower(PowerMultiply * 0.2);
+        LeftBackMotor.setPower(PowerMultiply * 0.2);
+        RightBackMotor.setPower(PowerMultiply * 0.2);
+        sleep(500);
+
         armMotor.setTargetPosition(50);
         armMotor.setPower(0.6);
+
+        //90 degree turn right
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * .8)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() - (RF * .8)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * .8)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() - (RB * .8)));
+        LeftFrontMotor.setPower(PowerMultiply * 0.5);
+        RightFrontMotor.setPower(PowerMultiply * 0.5);
+        LeftBackMotor.setPower(PowerMultiply * 0.5);
+        RightBackMotor.setPower(PowerMultiply * 0.5);
+        sleep(2000);
+
+        // Go to cone stack
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 1.575)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 1.575)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 1.575)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 1.575)));
+        LeftFrontMotor.setPower(PowerMultiply * 0.7);
+        RightFrontMotor.setPower(PowerMultiply * 0.7);
+        LeftBackMotor.setPower(PowerMultiply * 0.7);
+        RightBackMotor.setPower(PowerMultiply * 0.7);
+
+        // picks up top cone from stack
+        armMotor.setTargetPosition(875);
+        armMotor.setPower(0.9);
+        sleep(2000);
+        claw.setPosition(1.0);
+        sleep(1000);
+        armMotor.setTargetPosition(4120);
+        armMotor.setPower(0.9);
+        sleep(2000);
+
+        // Move back to junction
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() - (LF * 1.525)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() - (RF * 1.525)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() - (LB * 1.525)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() - (RB * 1.525)));
+        LeftFrontMotor.setPower(PowerMultiply * 0.7);
+        RightFrontMotor.setPower(PowerMultiply * 0.7);
+        LeftBackMotor.setPower(PowerMultiply * 0.7);
+        RightBackMotor.setPower(PowerMultiply * 0.7);
+        sleep(2000);
+
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * .8)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() - (RF * .8)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * .8)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() - (RB * .8)));
+        LeftFrontMotor.setPower(PowerMultiply * 0.5);
+        RightFrontMotor.setPower(PowerMultiply * 0.5);
+        LeftBackMotor.setPower(PowerMultiply * 0.5);
+        RightBackMotor.setPower(PowerMultiply * 0.5);
+        sleep(2000);
+
+        // place cone
+        armMotor.setTargetPosition(4120);
+        armMotor.setPower(0.9);
+        sleep(2000);
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 0.15)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 0.15)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 0.15)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 0.15)));
+        LeftFrontMotor.setPower(PowerMultiply * 0.2);
+        RightFrontMotor.setPower(PowerMultiply * 0.2);
+        LeftBackMotor.setPower(PowerMultiply * 0.2);
+        RightBackMotor.setPower(PowerMultiply * 0.2);
+        while(opModeIsActive() && armMotor.isBusy()){
+            telemetry.addData("LF: ", LeftFrontMotor.getTargetPosition());
+            telemetry.addData("RF: ", RightFrontMotor.getTargetPosition());
+            telemetry.addData("LB: ", LeftBackMotor.getTargetPosition());
+            telemetry.addData("RB: ", RightBackMotor.getTargetPosition());
+            telemetry.update();
+            sleep(10);
+        }
+        sleep(1000);
+        claw.setPosition(0.0);
+        armMotor.setTargetPosition(50);
+        armMotor.setPower(0.6);
+        LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * -0.2)));
+        RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * -0.2)));
+        LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * -0.2)));
+        RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * -0.2)));
+        LeftFrontMotor.setPower(PowerMultiply * 0.2);
+        RightFrontMotor.setPower(PowerMultiply * 0.2);
+        LeftBackMotor.setPower(PowerMultiply * 0.2);
+        RightBackMotor.setPower(PowerMultiply * 0.2);
+        sleep(10);
 
         telemetry.addData("LF: ", LeftFrontMotor.getCurrentPosition());
         telemetry.addData("RF: ", RightFrontMotor.getCurrentPosition());
@@ -352,10 +447,10 @@ public class FutureAutoLeft extends LinearOpMode
         telemetry.update();
 
         if (tagOfInterest == null ||tagOfInterest.id == left) {
-            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * -1.5)));
-            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 1.5)));
-            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 1.5)));
-            RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * -1.5)));
+            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 0.5)));
+            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * -0.5)));
+            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * -0.5)));
+            RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 0.5)));
             LeftFrontMotor.setPower(PowerMultiply * 0.2);
             RightFrontMotor.setPower(PowerMultiply * 0.2);
             LeftBackMotor.setPower(PowerMultiply * 0.2);
@@ -369,10 +464,10 @@ public class FutureAutoLeft extends LinearOpMode
                 sleep(10);
             }
         } else if (tagOfInterest == null ||tagOfInterest.id == right){
-            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * 0.5)));
-            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * -0.5)));
-            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * -0.5)));
-            RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * 0.5)));
+            LeftFrontMotor.setTargetPosition((int) (LeftFrontMotor.getTargetPosition() + (LF * -1.5)));
+            RightFrontMotor.setTargetPosition((int) (RightFrontMotor.getTargetPosition() + (RF * 1.5)));
+            LeftBackMotor.setTargetPosition((int) (LeftBackMotor.getTargetPosition() + (LB * 1.5)));
+            RightBackMotor.setTargetPosition((int) (RightBackMotor.getTargetPosition() + (RB * -1.5)));
             LeftFrontMotor.setPower(PowerMultiply * 0.2);
             RightFrontMotor.setPower(PowerMultiply * 0.2);
             LeftBackMotor.setPower(PowerMultiply * 0.2);

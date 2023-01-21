@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.tensorflow.lite.Tensor;
 
 @Config //This is needed to change variables marked as 'static' in Dashboard
-@TeleOp(name = "MecanumDrive", group = "Current")
+@TeleOp(name = "MecanumDrive")
 public class MecanumDrive extends OpMode {
 
     //----------------------------------------------------------------------------------------------
